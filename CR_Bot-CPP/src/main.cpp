@@ -9,6 +9,7 @@
 #include <fmt/ranges.h>
 
 #include <tobiaslocker_base64/base64.hpp>
+
 static unsigned char screen_record_bash[] = {
     #include "screen_record.bash.h"
 };
@@ -60,9 +61,28 @@ static void record(const std::string device_serial) {
     boost::process::ipstream pipe_stream;
     boost::process::child c(command_str, boost::process::std_out > pipe_stream);
 
+    ISVCDecoder* decoder;
+	WelsCreateDecoder(&decoder);
+
+    SDecodingParam sDecParam{};
+    sDecParam.bParseOnly = false;
+    sDecParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_DEFAULT;
+	decoder->Initialize(&sDecParam);
+
+    int count = 0;
     std::string line;
     while (pipe_stream && std::getline(pipe_stream, line)/* && !line.empty()*/) {
-        std::cout << line << std::endl;
+        unsigned char* ppDst;
+        int pStride = 0;
+        int width = 720;
+        int height = 1280;
+        DECODING_STATE a = decoder->DecodeFrame(reinterpret_cast<const unsigned char*>(line.c_str()), line.size(), &ppDst, &pStride, width, height);
+        if (a == dsErrorFree && ppDst != nullptr) {
+            std::cout << ppDst << std::endl;
+        }
+        count++;
+        std::cout << count << std::endl;
+        //std::cout << line << std::endl;
     }
 
     c.wait();
