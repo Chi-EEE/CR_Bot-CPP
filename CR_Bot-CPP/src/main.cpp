@@ -86,7 +86,7 @@ void save_frame_as_ppm(AVFrame* frame, int width, int height, int frame_number) 
 
 	// Write the pixel data for each row (accounting for linesize)
 	for (int y = 0; y < height; y++) {
-		file.write(reinterpret_cast<const char*>(frame->data[0] + y * frame->linesize[0]), 1, width, f);
+		file.write(reinterpret_cast<const char*>(frame->data[0] + y * frame->linesize[0]), width * 3);
 	}
 
 	file.close();
