@@ -13,11 +13,13 @@ int main()
 
     auto maybe_ip = config_toml["adb"]["ip"].value<std::string>();
     if (!maybe_ip) {
-
+		std::cerr << "No IP provided" << std::endl;
+        return 1;
     }
     auto maybe_device_serial = config_toml["adb"]["device_serial"].value<std::string>();
     if (!maybe_device_serial) {
-
+		std::cerr << "No device serial provided" << std::endl;
+        return 1;
     }
     std::string ip = maybe_ip.value_or("");
     std::string device_serial = maybe_device_serial.value_or("");
