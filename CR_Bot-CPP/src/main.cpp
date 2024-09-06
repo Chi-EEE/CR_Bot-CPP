@@ -9,6 +9,9 @@
 #include <fmt/ranges.h>
 
 #include <tobiaslocker_base64/base64.hpp>
+static unsigned char screen_record_bash[] = {
+    #include "screen_record.bash.h"
+};
 
 static void run_adb_command(const std::string device_serial, const std::vector<std::string> commands) {
     boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")));
@@ -49,15 +52,8 @@ static std::pair<int, int> get_size(const std::string device_serial) {
 }
 
 static void record(const std::string device_serial) {
-    std::string command = R"(#!/bin/bash
-while true; do
-    screenrecord --output-format=h264 \
-    --time-limit "179" \
-    --size "720x1280" \
-    --bit-rate "5M" -
-done)";
 
-	std::vector<std::string> commands = { "shell", "echo", command + "\n", "|", "base64", "-d", "|", "sh"};
+    std::vector<std::string> commands = { "shell", "echo", std::string(reinterpret_cast<char*>(screen_record_bash), sizeof(screen_record_bash)) + "\n", "|", "base64", "-d", "|", "sh" };
 
     std::string command_str = fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " "));
 	std::cout << command_str << std::endl;

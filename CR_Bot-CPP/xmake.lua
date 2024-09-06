@@ -22,6 +22,9 @@ target("CR_Bot-CPP", function()
     add_packages("fmt")
     add_packages("tobiaslocker_base64")
 
+    add_rules("utils.bin2c", {extensions = {".bash"}})
+    add_files("embed/screen_record.bash")
+
     if is_plat("windows") then
         add_defines("WIN32")
         add_defines("NOMINMAX")
