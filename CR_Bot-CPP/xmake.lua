@@ -32,10 +32,5 @@ target("CR_Bot-CPP", function()
     add_configfiles("config.toml")
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")
 
-    on_build(function(target)
-        print("on_build")
-        print("aaa", target:deps())
-    end)
-
     -- set_runargs("c:/Users/admin/Documents/GitHub/ClashRoyaleBuildABot/clashroyalebuildabot/models/units_M_480x352.onnx")
 end)

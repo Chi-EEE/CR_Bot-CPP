@@ -23,7 +23,7 @@ int main()
     std::string device_serial = maybe_device_serial.value_or("");
 
     boost::process::ipstream pipe_stream;
-    boost::process::child c(fmt::format("adb"), boost::process::std_out > pipe_stream);
+    boost::process::child c(fmt::format("adb -s {} shell wm size", device_serial), boost::process::std_out > pipe_stream);
 
     std::string line;
 
