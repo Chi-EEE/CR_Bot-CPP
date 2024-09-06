@@ -14,6 +14,8 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
+#include <libavutil/imgutils.h>
+#include <libswscale/swscale.h>
 }
 
 static unsigned char screen_record_bash[] = {
@@ -67,6 +69,30 @@ static std::string ReplaceAll(std::string str, const std::string& from, const st
 	return str;
 }
 
+// Save the frame as a PPM (Portable Pixmap) file
+void save_frame_as_ppm(AVFrame* frame, int width, int height, int frame_number) {
+	std::stringstream filename;
+	filename << "frame_" << frame_number << ".ppm";
+
+	std::ofstream file(filename.str(), std::ios::out | std::ios::binary);
+
+	if (!file.is_open()) {
+		std::cerr << "Could not open file for writing: " << filename.str() << std::endl;
+		return;
+	}
+
+	// Write the PPM header
+	file << "P6\n" << width << " " << height << "\n255\n";
+
+	// Write the pixel data for each row (accounting for linesize)
+	for (int y = 0; y < height; y++) {
+		file.write(reinterpret_cast<const char*>(frame->data[0] + y * frame->linesize[0]), 1, width, f);
+	}
+
+	file.close();
+	std::cout << "Saved frame " << frame_number << " as " << filename.str() << std::endl;
+}
+
 static void record(const std::string device_serial) {
 	av_log_set_level(AV_LOG_QUIET);
 
@@ -99,6 +125,8 @@ static void record(const std::string device_serial) {
 	std::cout << command_str << std::endl;
 	boost::process::ipstream pipe_stream;
 	boost::process::child c(command_str, boost::process::std_out > pipe_stream);
+
+	int frame_number = 0;
 
 	//int count = 0;
 	std::string line;
@@ -136,9 +164,34 @@ static void record(const std::string device_serial) {
 
 				AVFrame* frame = av_frame_alloc();
 				while (avcodec_receive_frame(codecCtx, frame) == 0) {
-					std::cout << "Got frame" << std::endl;
-					// Process the decoded frame (e.g., display or store it)
-					// Use the frame for further processing
+					// Convert the frame to RGB format (if needed)
+					if (codecCtx->pix_fmt != AV_PIX_FMT_RGB24) {
+						// Initialize a SwsContext to convert from the source format to RGB
+						SwsContext* sws_ctx = sws_getContext(
+							frame->width, frame->height, codecCtx->pix_fmt,
+							frame->width, frame->height, AV_PIX_FMT_RGB24,
+							SWS_BILINEAR, NULL, NULL, NULL);
+
+						AVFrame* rgb_frame = av_frame_alloc();
+						int num_bytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, frame->width, frame->height, 1);
+						uint8_t* buffer = (uint8_t*)av_malloc(num_bytes * sizeof(uint8_t));
+						av_image_fill_arrays(rgb_frame->data, rgb_frame->linesize, buffer, AV_PIX_FMT_RGB24, frame->width, frame->height, 1);
+
+						// Convert the frame to RGB
+						sws_scale(sws_ctx, frame->data, frame->linesize, 0, frame->height, rgb_frame->data, rgb_frame->linesize);
+
+						// Save the RGB frame
+						save_frame_as_ppm(rgb_frame, frame->width, frame->height, frame_number++);
+
+						// Free the converted frame
+						av_free(buffer);
+						av_frame_free(&rgb_frame);
+						sws_freeContext(sws_ctx);
+					}
+					else {
+						// If already in RGB24, save it directly
+						save_frame_as_ppm(frame, frame->width, frame->height, frame_number++);
+					}
 				}
 				av_frame_free(&frame);
 			}
