@@ -8,6 +8,8 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
+#include <tobiaslocker_base64/base64.hpp>
+
 static void run_adb_command(const std::string device_serial, const std::vector<std::string> commands) {
     boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")));
     c.wait();
@@ -46,6 +48,30 @@ static std::pair<int, int> get_size(const std::string device_serial) {
 	return std::make_pair(width, height);
 }
 
+static void record(const std::string device_serial) {
+    std::string command = R"(#!/bin/bash
+while true; do
+    screenrecord --output-format=h264 \
+    --time-limit "179" \
+    --size "720x1280" \
+    --bit-rate "5M" -
+done)";
+
+	std::vector<std::string> commands = { "shell", "echo", command + "\n", "|", "base64", "-d", "|", "sh"};
+
+    std::string command_str = fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " "));
+	std::cout << command_str << std::endl;
+    boost::process::ipstream pipe_stream;
+    boost::process::child c(command_str, boost::process::std_out > pipe_stream);
+
+    std::string line;
+    while (pipe_stream && std::getline(pipe_stream, line)/* && !line.empty()*/) {
+        std::cout << line << std::endl;
+    }
+
+    c.wait();
+}
+
 int main()
 {
     auto config_path = boost::dll::program_location().parent_path() / "config.toml";
@@ -64,16 +90,8 @@ int main()
     const std::string ip = maybe_ip.value_or("");
     const std::string device_serial = maybe_device_serial.value_or("");
 
-    get_size(device_serial);
-    /*boost::process::ipstream pipe_stream;
-    boost::process::child c(fmt::format("adb -s {} shell wm size", device_serial), boost::process::std_out > pipe_stream);
-
-    std::string line;
-
-    while (pipe_stream && std::getline(pipe_stream, line) && !line.empty())
-        std::cerr << line << std::endl;
-
-    c.wait();*/
+    //get_size(device_serial);
+    record(device_serial);
 
     std::cout << "Done";
     return 0;

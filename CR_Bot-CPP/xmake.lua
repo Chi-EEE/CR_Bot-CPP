@@ -6,6 +6,7 @@ add_requires("openh264")
 add_requires("boost")
 add_requires("toml++")
 add_requires("fmt")
+add_requires("tobiaslocker_base64")
 -- add_requires("sfml", "imgui-sfml v2.6")
 
 add_syslinks("kernel32")
@@ -19,6 +20,7 @@ target("CR_Bot-CPP", function()
     add_packages("boost")
     add_packages("toml++")
     add_packages("fmt")
+    add_packages("tobiaslocker_base64")
 
     if is_plat("windows") then
         add_defines("WIN32")
