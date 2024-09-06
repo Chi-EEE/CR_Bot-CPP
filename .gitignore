@@ -1,3 +1,13 @@
+# Xmake cache
+.xmake/
+build/
+
+# MacOS Cache
+.DS_Store
+
+# Visual Studio sln
+vsxmake*/
+
 # Prerequisites
 *.d
 
@@ -30,3 +40,5 @@
 *.exe
 *.out
 *.app
+.vscode/compile_commands.json
+.vscode/settings.json
