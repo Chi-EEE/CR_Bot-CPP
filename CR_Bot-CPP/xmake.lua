@@ -34,7 +34,7 @@ target("CR_Bot-CPP", function()
     -- add_packages("sfml", "imgui-sfml")
 
     add_files("src/*.cpp")
-    add_headerfiles("src/*.h")
+    add_headerfiles("src/*.h", "src/*.hpp")
 
     add_configfiles("config.toml")
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")

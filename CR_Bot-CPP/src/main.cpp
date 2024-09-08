@@ -19,9 +19,14 @@ extern "C" {
 }
 #include <png.h>
 
-static unsigned char screen_record_bash[] = {
-	#include "screen_record.bash.h"
-};
+#include "VideoFrame.hpp"
+#include "Packet.hpp"
+
+static std::string screen_record_bash = R"(#!/bin/bash
+while true; do
+    screenrecord --output-format=h264 --time-limit "179" --size "720x1280" --bit-rate "5M" -
+done
+)";
 
 static void run_adb_command(const std::string device_serial, const std::vector<std::string> commands) {
 	boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")));
@@ -73,7 +78,29 @@ static std::string ReplaceAll(std::string str, const std::string& from, const st
 // Function to save an AVFrame to a PNG file
 int save_frame_to_png(AVFrame* frame, std::string filename)
 {
-	int ret = 0;
+	struct SwsContext* sws_ctx = sws_getContext(
+		frame->width, frame->height, static_cast<AVPixelFormat>(frame->format),
+		frame->width, frame->height, AV_PIX_FMT_RGB24,
+		SWS_BILINEAR, NULL, NULL, NULL);
+
+	AVFrame* rgb_frame = av_frame_alloc();
+
+	// Set the properties of the output AVFrame
+	rgb_frame->format = AV_PIX_FMT_RGB24;
+	rgb_frame->width = frame->width;
+	rgb_frame->height = frame->height;
+
+	int ret = av_frame_get_buffer(rgb_frame, 0);
+	if (ret < 0)
+	{
+		return -1;
+	}
+
+	ret = sws_scale(sws_ctx, frame->data, frame->linesize, 0, frame->height, rgb_frame->data, rgb_frame->linesize);
+	if (ret < 0)
+	{
+		return -1;
+	}
 
 	// Open the PNG file for writing
 	FILE* fp = fopen(filename.c_str(), "wb");
@@ -129,6 +156,9 @@ int save_frame_to_png(AVFrame* frame, std::string filename)
 	png_destroy_write_struct(&png_ptr, &info_ptr);
 	fclose(fp);
 
+	av_frame_free(&rgb_frame);
+	sws_freeContext(sws_ctx);
+
 	return ret;
 }
 
@@ -136,7 +166,7 @@ static void save_gray_frame(unsigned char* buf, int wrap, int xsize, int ysize, 
 {
 	FILE* f;
 	int i;
-	f = fopen(filename.c_str(), "w");
+	f = fopen(filename.c_str(), "wb");
 	// writing the minimal required header for a pgm file format
 	// portable graymap format -> https://en.wikipedia.org/wiki/Netpbm_format#PGM_example
 	fprintf(f, "P5\n%d %d\n%d\n", xsize, ysize, 255);
@@ -148,7 +178,7 @@ static void save_gray_frame(unsigned char* buf, int wrap, int xsize, int ysize, 
 }
 
 static void record(const std::string device_serial) {
-	av_log_set_level(AV_LOG_QUIET);
+	//av_log_set_level(AV_LOG_QUIET);
 
 	const AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_H264);
 	if (!codec) {
@@ -162,21 +192,9 @@ static void record(const std::string device_serial) {
 		return;
 	}
 
-	AVCodecParameters* codec_parameters = avcodec_parameters_alloc();
-	codec_parameters->codec_type = AVMEDIA_TYPE_VIDEO;
-	codec_parameters->width = 720;
-	codec_parameters->height = 1280;
-	codec_parameters->profile = FF_PROFILE_H264_BASELINE;
-
 	AVCodecContext* codec_context = avcodec_alloc_context3(codec);
 	if (!codec_context) {
 		fprintf(stderr, "Could not allocate video codec context\n");
-		return;
-	}
-
-	if (avcodec_parameters_to_context(codec_context, codec_parameters) < 0)
-	{
-		fprintf(stderr, "failed to copy codec params to codec context");
 		return;
 	}
 
@@ -185,7 +203,7 @@ static void record(const std::string device_serial) {
 		return;
 	}
 
-	std::string record_bash_base64 = base64::to_base64(std::string(reinterpret_cast<char*>(screen_record_bash), sizeof(screen_record_bash)));
+	std::string record_bash_base64 = base64::to_base64(screen_record_bash);
 	std::vector<std::string> commands = { "shell", "echo", record_bash_base64 , "|", "base64", "-d", "|", "sh" };
 
 	std::string command_str = fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " "));
@@ -199,83 +217,80 @@ static void record(const std::string device_serial) {
 	while (pipe_stream && std::getline(pipe_stream, line)/* && !line.empty()*/) {
 		line = ReplaceAll(line, "\r\n", "\n");
 
-		const uint8_t* data = reinterpret_cast<const uint8_t*>(line.data());
-		int size = static_cast<int>(line.size());
+		std::vector<std::unique_ptr<Packet>> packets;
 
-		AVPacket *input_packet = av_packet_alloc();
-		if (!input_packet)
-		{
-			return;
-		}
+		const uint8_t* in_data = reinterpret_cast<const uint8_t*>(line.data());
+		int in_size = static_cast<int>(line.size());
 
-		while (size > 0) {
+		unsigned char* out_data;
+		int out_size;
+		int consumed = 0;
+
+		while (in_size > 0) {
 			// Parse the input data to packet
-			int ret = av_parser_parse2(parser, codec_context, &input_packet->data, &input_packet->size,
-				data, size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, AV_NOPTS_VALUE);
-			if (ret < 0) {
+			consumed = av_parser_parse2(parser, codec_context, &out_data, &out_size,
+				in_data, in_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
+			if (consumed < 0) {
 				break;
 			}
 
-			data += ret;
-			size -= ret;
-
-			if (!input_packet->size) {
-				continue;
+			if (out_size) {
+				std::unique_ptr<Packet> packet = std::make_unique<Packet>(out_size);
+				memcpy(packet->ptr->data, out_data, out_size);
+				packets.push_back(std::move(packet));
 			}
 
-			// Send the packet to the decoder
-			if (avcodec_send_packet(codec_context, input_packet) < 0) {
-				continue;
+			if (in_size <= 0) {
+				// This was a flush. Only one packet should ever be returned.
+				break;
 			}
 
-			AVFrame* input_frame = av_frame_alloc();
-			while (avcodec_receive_frame(codec_context, input_frame) >= 0) {
-				// Check if the frame is a planar YUV 4:2:0, 12bpp
-				// That is the format of the provided .mp4 file
-				// RGB formats will definitely not give a gray image
-				// Other YUV image may do so, but untested, so give a warning
-				if (input_frame->format != AV_PIX_FMT_YUV420P)
-				{
-					std::cout << "Warning: the generated file may not be a grayscale image, but could e.g. be just the R component if the video format is RGB";
-				}
+			in_data += consumed;
+			in_size -= consumed;
 
-				if (false) {
-					// To create the PNG files, the AVFrame data must be translated from YUV420P format into RGB24
-					struct SwsContext* sws_ctx = sws_getContext(
-						input_frame->width, input_frame->height, static_cast<AVPixelFormat>(input_frame->format),
-						input_frame->width, input_frame->height, AV_PIX_FMT_RGB24,
-						SWS_BILINEAR, NULL, NULL, NULL);
-
-					AVFrame* rgb_frame = av_frame_alloc();
-
-					// Set the properties of the output AVFrame
-					rgb_frame->format = AV_PIX_FMT_RGB24;
-					rgb_frame->width = input_frame->width;
-					rgb_frame->height = input_frame->height;
-
-					int ret = av_frame_get_buffer(rgb_frame, 0);
-					if (ret < 0)
-					{
-						return;
-					}
-					ret = sws_scale(sws_ctx, input_frame->data, input_frame->linesize, 0, input_frame->height, rgb_frame->data, rgb_frame->linesize);
-					if (ret < 0)
-					{
-						return;
-					}
-					save_frame_to_png(rgb_frame, fmt::format("frame-{}.png", frame_number++));
-
-					av_frame_free(&rgb_frame);
-					sws_freeContext(sws_ctx);
-				}
-				else {
-					save_gray_frame(input_frame->data[0], input_frame->linesize[0], input_frame->width, input_frame->height, fmt::format("frame-{}.pgm", frame_number++));
-				}
+			if (in_size <= 0) {
+				break;
 			}
-			av_frame_free(&input_frame);
 		}
-		av_packet_unref(input_packet);
+
+		if (packets.empty()) {
+			continue;
+		}
+
+		std::unique_ptr<Packet>& packet = packets.back();
+
+		avcodec_send_packet(codec_context, packet->ptr);
+
+		std::vector<std::unique_ptr<VideoFrame>> frames;
+		while (true) {
+			std::unique_ptr<VideoFrame> frame = std::make_unique<VideoFrame>();
+
+			int ret = avcodec_receive_frame(codec_context, frame->ptr);
+			if (ret == AVERROR_EOF) {
+				// Decoding finished, no more frames
+				break;
+			}
+			else if (ret == AVERROR(EAGAIN)) {
+				// No more frames for now, wait for more input
+				break;
+			}
+			else if (ret < 0) {
+				// Handle other errors
+				break;
+			}
+
+			frames.push_back(std::move(frame));
+		}
+
+		for (std::unique_ptr<VideoFrame>& frame : frames) {
+			//save_frame_to_png(frame.ptr, fmt::format("frame_{}.png", frame_number));
+			save_gray_frame(frame->ptr->data[0], frame->ptr->linesize[0], frame->ptr->width, frame->ptr->height, fmt::format("frame_{}.pgm", frame_number));
+			frame_number++;
+		}
 	}
+
+	av_parser_close(parser);
+	avcodec_free_context(&codec_context);
 
 	c.wait();
 }
@@ -297,6 +312,9 @@ int main()
 	}
 	const std::string ip = maybe_ip.value_or("");
 	const std::string device_serial = maybe_device_serial.value_or("");
+	run_adb_command(device_serial, { "kill-server" });
+	run_adb_command(device_serial, { "start-server" });
+	run_adb_command(device_serial, { "get-state" });
 	get_size(device_serial);
 	record(device_serial);
 
