@@ -8,6 +8,7 @@ public:
 	Packet(int size) {
 		this->ptr = av_packet_alloc();
 		av_new_packet(this->ptr, size);
+		this->ptr->dts = AV_NOPTS_VALUE;
 	}
 
 	~Packet() {
