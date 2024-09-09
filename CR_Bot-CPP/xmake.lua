@@ -2,9 +2,9 @@ add_rules("mode.debug", "mode.release")
 
 add_requires("platform-tools 35.0.0")
 add_requires("onnxruntime 1.19.2")
-add_requires("openh264", "ffmpeg")
+add_requires("openh264", "ffmpeg 7.0.2")
 add_requires("libjpeg", "libpng")
-add_requires("boost")
+add_requires("boost", {configs = {iostreams = true}})
 add_requires("toml++")
 add_requires("fmt")
 add_requires("tobiaslocker_base64")
@@ -35,6 +35,8 @@ target("CR_Bot-CPP", function()
 
     add_files("src/*.cpp")
     add_headerfiles("src/*.h", "src/*.hpp")
+
+    add_defines("BOOST_ASIO_DISABLE_CONCEPTS")
 
     add_configfiles("config.toml")
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")

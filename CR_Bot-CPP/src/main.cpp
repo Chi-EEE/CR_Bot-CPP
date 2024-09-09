@@ -2,6 +2,13 @@
 
 #include <boost/dll.hpp>
 #include <boost/process.hpp>
+
+
+#include <boost/fusion/adapted.hpp>
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/asio.hpp>
+
 #include <wels/codec_api.h>
 #include <toml++/toml.hpp>
 
@@ -208,15 +215,22 @@ static void record(const std::string device_serial) {
 
 	std::string command_str = fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " "));
 	std::cout << command_str << std::endl;
+
+	std::future<std::vector<char> > output, error;
+
+	boost::asio::io_context svc;
 	boost::process::ipstream pipe_stream;
-	boost::process::child c(command_str, boost::process::std_out > pipe_stream);
+	boost::process::child c(command_str, boost::process::std_out > output);
 
 	int frame_number = 0;
 
+	auto raw = output.get();
 	std::string line;
-	while (pipe_stream && std::getline(pipe_stream, line)/* && !line.empty()*/) {
-		line = ReplaceAll(line, "\r\n", "\n");
+	boost::iostreams::stream_buffer<boost::iostreams::array_source> sb(raw.data(), raw.size());
+	std::istream is(&sb);
 
+	while (std::getline(is, line) && !line.empty())
+	{
 		std::vector<std::unique_ptr<Packet>> packets;
 
 		const uint8_t* in_data = reinterpret_cast<const uint8_t*>(line.data());
@@ -288,9 +302,6 @@ static void record(const std::string device_serial) {
 			frame_number++;
 		}
 	}
-
-	av_parser_close(parser);
-	avcodec_free_context(&codec_context);
 
 	c.wait();
 }
