@@ -10,7 +10,7 @@ add_requires("fmt")
 add_requires("tobiaslocker_base64")
 -- add_requires("sfml", "imgui-sfml v2.6")
 
-add_syslinks("kernel32")
+add_syslinks("kernel32", "shell32")
 
 target("CR_Bot-CPP", function()
     set_kind("binary")
