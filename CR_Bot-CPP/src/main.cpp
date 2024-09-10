@@ -27,10 +27,13 @@ extern "C" {
 #include "Packet.hpp"
 
 static std::string screen_record_bash = R"(#!/bin/bash
- while true; do
-     screenrecord --output-format=h264 --time-limit "179" --size "720x1280" --bit-rate "5M" -
- done
- )";
+while true; do
+    screenrecord --output-format=h264 \
+    --time-limit "179" \
+    --size "720x1280" \
+    --bit-rate "5M" -
+done
+)";
 
 
 static std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
@@ -55,6 +58,80 @@ static void save_gray_frame(unsigned char* buf, int wrap, int xsize, int ysize, 
 	for (i = 0; i < ysize; i++)
 		fwrite(buf + i * wrap, 1, xsize, f);
 	fclose(f);
+}
+
+static void process(AVCodecParserContext* parser, AVCodecContext* codec_context, int& frame_number, std::array<char, 1> buffer) {
+	std::vector<std::unique_ptr<Packet>> packets;
+
+	const uint8_t* in_data = reinterpret_cast<const uint8_t*>(buffer.data());
+	int in_size = static_cast<int>(buffer.size());
+
+	unsigned char* out_data;
+	int out_size;
+	int consumed = 0;
+
+	while (in_size > 0) {
+		// Parse the input data to packet
+		consumed = av_parser_parse2(parser, codec_context, &out_data, &out_size,
+			in_data, in_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
+
+		if (consumed < 0) {
+			break;
+		}
+
+		if (out_size) {
+			std::unique_ptr<Packet> packet = std::make_unique<Packet>(out_size);
+			memcpy(packet->ptr->data, out_data, out_size);
+			packets.push_back(std::move(packet));
+		}
+
+		if (in_size <= 0) {
+			// This was a flush. Only one packet should ever be returned.
+			break;
+		}
+
+		in_data += consumed;
+		in_size -= consumed;
+
+		if (in_size <= 0) {
+			break;
+		}
+	}
+
+	if (packets.empty()) {
+		return;
+	}
+
+	std::unique_ptr<Packet>& packet = packets.back();
+
+	avcodec_send_packet(codec_context, packet->ptr);
+
+	std::vector<std::unique_ptr<VideoFrame>> frames;
+	while (true) {
+		std::unique_ptr<VideoFrame> frame = std::make_unique<VideoFrame>();
+
+		int ret = avcodec_receive_frame(codec_context, frame->ptr);
+		if (ret == AVERROR_EOF) {
+			// Decoding finished, no more frames
+			break;
+		}
+		else if (ret == AVERROR(EAGAIN)) {
+			// No more frames for now, wait for more input
+			break;
+		}
+		else if (ret < 0) {
+			// Handle other errors
+			break;
+		}
+
+		frames.push_back(std::move(frame));
+	}
+
+	for (std::unique_ptr<VideoFrame>& frame : frames) {
+		//save_frame_to_png(frame.ptr, fmt::format("frame_{}.png", frame_number));
+		save_gray_frame(frame->ptr->data[0], frame->ptr->linesize[0], frame->ptr->width, frame->ptr->height, fmt::format("frame_{}.pgm", frame_number));
+		frame_number++;
+	}
 }
 
 static void record(const std::string device_serial) {
@@ -84,99 +161,39 @@ static void record(const std::string device_serial) {
 	}
 
 	std::string record_bash_base64 = base64::to_base64(screen_record_bash);
-	std::vector<std::string> commands = { "shell", "echo", record_bash_base64 , "|", "base64", "-d", "|", "sh" };
+	std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "-" };
 
 	std::string command_str = fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " "));
 	std::cout << command_str << std::endl;
 
-	std::future<std::vector<char> > output, error;
-
-	boost::asio::io_context svc;
-	boost::process::child c(command_str, boost::process::std_out > output, boost::process::std_err > error, svc);
-	svc.run();
+	boost::asio::io_context ioc;
+	boost::process::async_pipe pipe(ioc);
+	boost::process::child c(command_str, boost::process::std_out > pipe, ioc);
 
 	int frame_number = 0;
 
-	auto raw = output.get();
-	std::string line;
-	boost::iostreams::stream_buffer<boost::iostreams::array_source> sb(raw.data(), raw.size());
-	std::istream is(&sb);
+	std::array<char, 1> buffer;
+	std::function<void()> do_read;
+	do_read = [&]() {
+		boost::asio::async_read(pipe, boost::asio::buffer(buffer),
+			[&](boost::system::error_code ec, std::size_t length) {
+				if (!ec) {
+					// Process the received line
+					process(parser, codec_context, frame_number, buffer);
 
-	while (std::getline(is, line) && !line.empty())
-	{
-		std::vector<std::unique_ptr<Packet>> packets;
-
-		const uint8_t* in_data = reinterpret_cast<const uint8_t*>(line.data());
-		int in_size = static_cast<int>(line.size());
-
-		unsigned char* out_data;
-		int out_size;
-		int consumed = 0;
-
-		while (in_size > 0) {
-			// Parse the input data to packet
-			consumed = av_parser_parse2(parser, codec_context, &out_data, &out_size,
-				in_data, in_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
-			if (consumed < 0) {
-				break;
+					do_read();  // Initiate the next asynchronous read
+				}
+				else {
+					std::cout << "Error: " << ec.message() << std::endl;
+				}
 			}
+		);
+		};
 
-			if (out_size) {
-				std::unique_ptr<Packet> packet = std::make_unique<Packet>(out_size);
-				memcpy(packet->ptr->data, out_data, out_size);
-				packets.push_back(std::move(packet));
-			}
+	// Start the first read
+	do_read();
 
-			if (in_size <= 0) {
-				// This was a flush. Only one packet should ever be returned.
-				break;
-			}
-
-			in_data += consumed;
-			in_size -= consumed;
-
-			if (in_size <= 0) {
-				break;
-			}
-		}
-
-		if (packets.empty()) {
-			continue;
-		}
-
-		std::unique_ptr<Packet>& packet = packets.back();
-
-		avcodec_send_packet(codec_context, packet->ptr);
-
-		std::vector<std::unique_ptr<VideoFrame>> frames;
-		while (true) {
-			std::unique_ptr<VideoFrame> frame = std::make_unique<VideoFrame>();
-
-			int ret = avcodec_receive_frame(codec_context, frame->ptr);
-			if (ret == AVERROR_EOF) {
-				// Decoding finished, no more frames
-				break;
-			}
-			else if (ret == AVERROR(EAGAIN)) {
-				// No more frames for now, wait for more input
-				break;
-			}
-			else if (ret < 0) {
-				// Handle other errors
-				break;
-			}
-
-			frames.push_back(std::move(frame));
-		}
-
-		for (std::unique_ptr<VideoFrame>& frame : frames) {
-			//save_frame_to_png(frame.ptr, fmt::format("frame_{}.png", frame_number));
-			save_gray_frame(frame->ptr->data[0], frame->ptr->linesize[0], frame->ptr->width, frame->ptr->height, fmt::format("frame_{}.pgm", frame_number));
-			frame_number++;
-		}
-	}
-
-	c.wait();
+	ioc.run();
 }
 
 int main()
@@ -196,10 +213,6 @@ int main()
 	}
 	const std::string ip = maybe_ip.value_or("");
 	const std::string device_serial = maybe_device_serial.value_or("");
-	//run_adb_command(device_serial, { "kill-server" });
-	//run_adb_command(device_serial, { "start-server" });
-	//run_adb_command(device_serial, { "get-state" });
-	//get_size(device_serial);
 	record(device_serial);
 
 	std::cout << "Done";
