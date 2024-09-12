@@ -64,14 +64,14 @@ static void record(const std::string device_serial) {
 	int frame_number = 0;
 
 	VideoReformatter reformatter;
-	std::array<char, 1> buffer;
+	std::array<uint8_t, 2048> buffer;
 	std::function<void()> do_read;
 	do_read = [&]() {
 		boost::asio::async_read(pipe, boost::asio::buffer(buffer),
 			[&](boost::system::error_code ec, std::size_t length) {
 				if (!ec) {
 					// Process the received line
-					std::vector<std::unique_ptr<Packet>> packets = codec_context->parse(buffer);
+					std::vector<std::unique_ptr<Packet>> packets = codec_context->parse(buffer.data(), buffer.size());
 					if (packets.empty()) {
 						do_read();
 						return;

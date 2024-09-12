@@ -47,11 +47,11 @@ public:
 	}
 
 	[[nodiscard]]
-	std::vector<std::unique_ptr<Packet>> parse(std::array<char, 1> buffer) {
+	std::vector<std::unique_ptr<Packet>> parse(const uint8_t* buffer, const size_t size) {
 		std::vector<std::unique_ptr<Packet>> packets;
 
-		const uint8_t* in_data = reinterpret_cast<const uint8_t*>(buffer.data());
-		int in_size = static_cast<int>(buffer.size());
+		const uint8_t* in_data = buffer;
+		size_t in_size = size;
 
 		unsigned char* out_data;
 		int out_size;
