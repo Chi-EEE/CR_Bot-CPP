@@ -60,6 +60,7 @@ public:
 		this->ptr->ch_layout = frame->ptr->ch_layout;
 	}
 
+	[[nodiscard]]
 	std::vector<VideoPlane> planes() {
 		int max_plane_count = 0;
 		for (int i = 0; i < this->format.ptr->nb_components; i++) {

@@ -21,6 +21,7 @@ extern "C" {
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 }
+
 #include <opencv2/opencv.hpp>
 #include <png.h>
 
@@ -47,80 +48,6 @@ static std::string ReplaceAll(std::string str, const std::string& from, const st
 		start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
 	}
 	return str;
-}
-
-// Function to save an AVFrame to a PNG file
-/*int save_frame_to_png(AVFrame* frame, std::string filename)
-{
-	// Open the PNG file for writing
-	FILE* fp = fopen(filename.c_str(), "wb");
-	if (!fp)
-	{
-		return -1;
-	}
-
-	// Create the PNG write struct and info struct
-	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr)
-	{
-		fclose(fp);
-		return -1;
-	}
-
-	png_infop info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr)
-	{
-		png_destroy_write_struct(&png_ptr, NULL);
-		fclose(fp);
-		return -1;
-	}
-
-	// Set up error handling for libpng
-	if (setjmp(png_jmpbuf(png_ptr)))
-	{
-		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fclose(fp);
-		return -1;
-	}
-
-	// Set the PNG file as the output for libpng
-	png_init_io(png_ptr, fp);
-
-	// Set the PNG image attributes
-	png_set_IHDR(png_ptr, info_ptr, frame->width, frame->height, 8, PNG_COLOR_TYPE_RGB,
-		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
-	// Allocate memory for the row pointers and fill them with the AVFrame data
-	png_bytep* row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * frame->height);
-	for (int y = 0; y < frame->height; y++)
-	{
-		row_pointers[y] = (png_bytep)(frame->data[0] + y * frame->linesize[0]);
-	}
-
-	// Write the PNG file
-	png_set_rows(png_ptr, info_ptr, row_pointers);
-	png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
-
-	// Clean up
-	free(row_pointers);
-	png_destroy_write_struct(&png_ptr, &info_ptr);
-	fclose(fp);
-	return 0;
-}*/
-
-static void save_gray_frame(unsigned char* buf, int wrap, int xsize, int ysize, std::string filename)
-{
-	FILE* f;
-	int i;
-	f = fopen(filename.c_str(), "wb");
-	// writing the minimal required header for a pgm file format
-	// portable graymap format -> https://en.wikipedia.org/wiki/Netpbm_format#PGM_example
-	fprintf(f, "P5\n%d %d\n%d\n", xsize, ysize, 255);
-
-	// writing line by line
-	for (i = 0; i < ysize; i++)
-		fwrite(buf + i * wrap, 1, xsize, f);
-	fclose(f);
 }
 
 static void process(AVCodecParserContext* parser, AVCodecContext* codec_context, int& frame_number, std::array<char, 1> buffer) {
@@ -197,10 +124,7 @@ static void process(AVCodecParserContext* parser, AVCodecContext* codec_context,
 			continue;
 		}
 		
-		reformatted_frame->to_image();
-
-		//save_frame_to_png(reformatted_frame->ptr, fmt::format("frame_{}.png", frame_number));
-		//save_gray_frame(frame->ptr->data[0], frame->ptr->linesize[0], frame->ptr->width, frame->ptr->height, fmt::format("frame_{}.pgm", frame_number));
+		std::unique_ptr<cv::Mat> image = reformatted_frame->to_image();
 
 		frame_number++;
 	}
