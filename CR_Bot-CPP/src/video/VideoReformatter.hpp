@@ -32,7 +32,7 @@ public:
 		if (this->ptr != nullptr)
 			sws_freeContext(this->ptr);
 	}
-	// TODO: Create a new frame instead
+
 	std::unique_ptr<VideoFrame> reformat(
 		VideoFrame* frame,
 		int width = 0,
@@ -123,26 +123,26 @@ private:
 				&contrast,
 				&saturation
 			);
+
+			// Grab the coefficients for the requested transforms.
+				// The inv_table brings us to linear, and `tbl` to the new space.
+			if (src_colorspace != SWS_CS_DEFAULT)
+				inv_tbl = const_cast<int*>(sws_getCoefficients(src_colorspace));
+			if (dst_colorspace != SWS_CS_DEFAULT)
+				tbl = const_cast<int*>(sws_getCoefficients(dst_colorspace));
+
+			// Apply!
+			ret = sws_setColorspaceDetails(
+				this->ptr,
+				inv_tbl,
+				src_color_range,
+				tbl,
+				dst_color_range,
+				brightness,
+				contrast,
+				saturation
+			);
 		}
-
-		// Grab the coefficients for the requested transforms.
-			// The inv_table brings us to linear, and `tbl` to the new space.
-		if (src_colorspace != SWS_CS_DEFAULT)
-			inv_tbl = const_cast<int*>(sws_getCoefficients(src_colorspace));
-		if (dst_colorspace != SWS_CS_DEFAULT)
-			tbl = const_cast<int*>(sws_getCoefficients(dst_colorspace));
-
-		// Apply!
-		ret = sws_setColorspaceDetails(
-			this->ptr,
-			inv_tbl,
-			src_color_range,
-			tbl,
-			dst_color_range,
-			brightness,
-			contrast,
-			saturation
-		);
 
 		// Create a new frame to hold the reformatted data.
 		std::unique_ptr<VideoFrame> new_frame = std::make_unique<VideoFrame>();

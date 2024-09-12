@@ -53,6 +53,7 @@ public:
 	}
 
 	void _copy_internal_attributes(VideoFrame* frame) {
+		av_frame_copy_props(this->ptr, frame->ptr);
 		this->ptr->format = frame->ptr->format;
 		this->ptr->width = frame->ptr->width;
 		this->ptr->height = frame->ptr->height;
