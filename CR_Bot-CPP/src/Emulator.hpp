@@ -7,40 +7,50 @@
 #include <boost/dll.hpp>
 #include <boost/process.hpp>
 
-static void run_adb_command(const std::string device_serial, const std::vector<std::string> commands) {
-	boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")));
-	c.wait();
-}
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 
-static std::string run_adb_command_with_output(const std::string device_serial, const std::vector<std::string> commands) {
-	std::stringstream output;
-	boost::process::ipstream pipe_stream;
-	boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")), boost::process::std_out > pipe_stream);
+class Emulator {
+public:
+	void click(int x, int y) {
+		this->run_adb_command({ "shell", "input", "tap", std::to_string(x), std::to_string(y) });
+	}
 
-	std::string line;
-	while (pipe_stream && std::getline(pipe_stream, line) && !line.empty())
-		output << line << std::endl;
+	void start_game() {
+		this->run_adb_command({ "shell", "am", "start", "-n", "com.supercell.clashroyale/com.supercell.titan.GameApp" });
+	}
 
-	c.wait();
-	return output.str();
-}
+	void stop_game() {
+		this->run_adb_command({ "shell", "am", "force-stop", "com.supercell.clashroyale" });
+	}
 
-static void click(const std::string device_serial, int x, int y) {
-	run_adb_command(device_serial, { "shell", "input", "tap", std::to_string(x), std::to_string(y) });
-}
+	[[nodiscard]]
+	std::pair<int, int> get_size(const std::string device_serial) {
+		std::string size_str = this->run_adb_command_with_output(device_serial, { "shell", "wm", "size" });
+		size_str = size_str.substr(std::string("Physical size: ").size(), size_str.size());
+		int width = std::stoi(size_str.substr(0, size_str.find("x")));
+		int height = std::stoi(size_str.substr(size_str.find("x") + 1, size_str.size()));
+		return std::make_pair(width, height);
+	}
 
-static void start_game(const std::string device_serial) {
-	run_adb_command(device_serial, { "shell", "am", "start", "-n", "com.supercell.clashroyale/com.supercell.titan.GameApp" });
-}
+	void run_adb_command(const std::vector<std::string> commands) {
+		boost::process::child c(fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " ")));
+		c.wait();
+	}
 
-static void stop_game(const std::string device_serial) {
-	run_adb_command(device_serial, { "shell", "am", "force-stop", "com.supercell.clashroyale" });
-}
+	[[nodiscard]]
+	std::string run_adb_command_with_output(const std::string device_serial, const std::vector<std::string> commands) {
+		std::stringstream output;
+		boost::process::ipstream pipe_stream;
+		boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")), boost::process::std_out > pipe_stream);
 
-static std::pair<int, int> get_size(const std::string device_serial) {
-	std::string size_str = run_adb_command_with_output(device_serial, { "shell", "wm", "size" });
-	size_str = size_str.substr(std::string("Physical size: ").size(), size_str.size());
-	int width = std::stoi(size_str.substr(0, size_str.find("x")));
-	int height = std::stoi(size_str.substr(size_str.find("x") + 1, size_str.size()));
-	return std::make_pair(width, height);
-}
+		std::string line;
+		while (pipe_stream && std::getline(pipe_stream, line) && !line.empty())
+			output << line << std::endl;
+
+		c.wait();
+		return output.str();
+	}
+private:
+	const std::string device_serial;
+};
