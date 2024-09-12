@@ -81,7 +81,8 @@ public:
 		return planes;
 	}
 
-	void to_image() {
+	[[nodiscard]]
+	std::unique_ptr<cv::Mat> to_image() {
 		std::vector<VideoPlane> planes = this->planes();
 		VideoPlane& plane = planes[0];
 
@@ -100,8 +101,8 @@ public:
 			o_pos += o_stride;
 		}
 
-		cv::Mat img(plane.height, plane.width, CV_8UC3, o_buf.data());
-		cv::imwrite("frame.png", img);
+		std::unique_ptr<cv::Mat> img = std::make_unique<cv::Mat>(plane.height, plane.width, CV_8UC3, o_buf.data());
+		return std::move(img);
 	}
 
 	AVFrame* ptr = nullptr;

@@ -192,7 +192,7 @@ static void process(AVCodecParserContext* parser, AVCodecContext* codec_context,
 
 	for (std::unique_ptr<VideoFrame>& frame : frames) {
 		VideoReformatter reformatter;
-		std::unique_ptr<VideoFrame> reformatted_frame = reformatter.reformat(frame.get(), 720, 1280, AV_PIX_FMT_RGB24);
+		std::unique_ptr<VideoFrame> reformatted_frame = reformatter.reformat(frame.get(), 720, 1280, AV_PIX_FMT_BGR24);
 		if (!reformatted_frame) {
 			continue;
 		}
