@@ -59,7 +59,7 @@ public:
 		std::unique_ptr<CodecContext> codec_context = std::make_unique<CodecContext>();
 
 		//std::string record_bash_base64 = base64::to_base64(screen_record_bash);
-		std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "-" };
+		std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "--bit-rate", R"("5M")", "-" };
 
 		std::string command_str = fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " "));
 		std::cout << command_str << std::endl;
