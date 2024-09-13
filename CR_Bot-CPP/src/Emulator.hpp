@@ -14,16 +14,7 @@
 
 #include <tobiaslocker_base64/base64.hpp>
 
-#include "video/CodecContext.hpp"
-
-//static std::string screen_record_bash = R"(#!/bin/bash
-//while true; do
-//    screenrecord --output-format=h264 \
-//    --time-limit "179" \
-//    --size "720x1280" \
-//    --bit-rate "5M" -
-//done
-//)";
+#include "av/CodecContext.hpp"
 
 class Emulator {
 public:
@@ -56,7 +47,7 @@ public:
 	}
 
 	void record() {
-		std::unique_ptr<CodecContext> codec_context = std::make_unique<CodecContext>();
+		std::unique_ptr<av::CodecContext> codec_context = std::make_unique<av::CodecContext>();
 
 		//std::string record_bash_base64 = base64::to_base64(screen_record_bash);
 		std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "--bit-rate", R"("5M")", "-" };
@@ -70,7 +61,7 @@ public:
 
 		int frame_number = 0;
 
-		VideoReformatter reformatter;
+		av::VideoReformatter reformatter;
 		std::array<uint8_t, 2048> buffer;
 		std::function<void()> do_read;
 		do_read = [&]() {
@@ -78,18 +69,18 @@ public:
 				[&](boost::system::error_code ec, std::size_t length) {
 					if (!ec) {
 						// Process the received line
-						std::vector<std::unique_ptr<Packet>> packets = codec_context->parse(buffer.data(), buffer.size());
+						std::vector<std::unique_ptr<av::Packet>> packets = codec_context->parse(buffer.data(), buffer.size());
 						if (packets.empty()) {
 							do_read();
 							return;
 						}
 
-						std::unique_ptr<Packet>& packet = packets.back();
+						std::unique_ptr<av::Packet>& packet = packets.back();
 
-						std::vector<std::unique_ptr<VideoFrame>> frames = codec_context->decode(packet);
+						std::vector<std::unique_ptr<av::VideoFrame>> frames = codec_context->decode(packet);
 
-						for (std::unique_ptr<VideoFrame>& frame : frames) {
-							std::unique_ptr<VideoFrame> reformatted_frame = reformatter.reformat(frame.get(), 720, 1280, AV_PIX_FMT_BGR24);
+						for (std::unique_ptr<av::VideoFrame>& frame : frames) {
+							std::unique_ptr<av::VideoFrame> reformatted_frame = reformatter.reformat(frame.get(), 720, 1280, AV_PIX_FMT_BGR24);
 							if (!reformatted_frame) {
 								continue;
 							}

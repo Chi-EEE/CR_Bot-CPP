@@ -8,6 +8,7 @@
 
 int main()
 {
+	/*
 	auto config_path = boost::dll::program_location().parent_path() / "config.toml";
 	auto config_toml = toml::parse_file(config_path.string());
 
@@ -28,5 +29,6 @@ int main()
 	emulator.record();
 
 	std::cout << "Done";
+	*/
 	return 0;
 }
