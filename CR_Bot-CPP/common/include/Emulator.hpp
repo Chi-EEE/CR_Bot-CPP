@@ -18,7 +18,7 @@
 
 class Emulator {
 public:
-	Emulator(const std::string device_serial): device_serial(device_serial) {
+	Emulator(const std::string device_serial) : device_serial(device_serial) {
 	}
 
 	~Emulator() {
@@ -39,17 +39,24 @@ public:
 
 	[[nodiscard]]
 	std::pair<int, int> get_size(const std::string device_serial) {
-		std::string size_str = this->run_adb_command_with_output(this->device_serial, { "shell", "wm", "size" });
+		std::string size_str = this->run_adb_command_with_output({ "shell", "wm", "size" });
 		size_str = size_str.substr(std::string("Physical size: ").size(), size_str.size());
 		int width = std::stoi(size_str.substr(0, size_str.find("x")));
 		int height = std::stoi(size_str.substr(size_str.find("x") + 1, size_str.size()));
 		return std::make_pair(width, height);
 	}
 
-	void record() {
+	[[nodiscard]]
+	cv::Mat screenshot() {
+		std::string image_str = this->run_adb_command_with_output({ "exec-out", "screencap", "-p" });
+		std::vector<uint8_t> image_data(image_str.begin(), image_str.end());
+		cv::Mat image = cv::imdecode(std::move(image_data), cv::IMREAD_COLOR);
+		return image;
+	}
+
+	void start_record() {
 		std::unique_ptr<av::CodecContext> codec_context = std::make_unique<av::CodecContext>();
 
-		//std::string record_bash_base64 = base64::to_base64(screen_record_bash);
 		std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "--bit-rate", R"("5M")", "-" };
 
 		std::string command_str = fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " "));
@@ -59,9 +66,8 @@ public:
 		boost::process::async_pipe pipe(ioc);
 		boost::process::child c(command_str, boost::process::std_out > pipe, ioc);
 
-		int frame_number = 0;
-
 		av::VideoReformatter reformatter;
+		// The buffer '2048' is the only highest buffer size that works and is the quickest
 		std::array<uint8_t, 2048> buffer;
 		std::function<void()> do_read;
 		do_read = [&]() {
@@ -86,12 +92,11 @@ public:
 							}
 
 							cv::Mat image = reformatted_frame->to_image();
-							cv::imwrite(fmt::format("frame_{}.png", frame_number), image);
-
-							frame_number++;
+							this->last_frame = image;
 						}
 
-						do_read();  // Initiate the next asynchronous read
+						// Initiate the next asynchronous read
+						do_read();
 					}
 					else {
 						spdlog::error("Error: {}", ec.message());
@@ -111,19 +116,20 @@ public:
 		c.wait();
 	}
 
+	// https://stackoverflow.com/a/67640372
 	[[nodiscard]]
-	std::string run_adb_command_with_output(const std::string device_serial, const std::vector<std::string> commands) {
-		std::stringstream output;
-		boost::process::ipstream pipe_stream;
-		boost::process::child c(fmt::format("adb -s {} {}", device_serial, fmt::join(commands, " ")), boost::process::std_out > pipe_stream);
+	std::string run_adb_command_with_output(const std::vector<std::string> commands) {
+		boost::asio::io_context ioc;
+		std::future<std::string> data;
+		boost::process::child c(fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " ")), boost::process::std_out > data, ioc);
 
-		std::string line;
-		while (pipe_stream && std::getline(pipe_stream, line) && !line.empty())
-			output << line << std::endl;
+		c.detach();
 
-		c.wait();
-		return output.str();
+		ioc.run();
+
+		return data.get();
 	}
 private:
 	const std::string device_serial;
+	cv::Mat last_frame;
 };

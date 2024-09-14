@@ -1,0 +1,17 @@
+[arena]
+top_left = { x = 87, y = 157 }
+size = { width = 905, height = 1312 }
+tile_size = { width = 18, height = 32 }
+
+[next_card]
+top_left = { x = 64, y = 1792 }
+size = { width = 82, height = 65 }
+
+[card]
+top_left = { x = 251, y = 1600 }
+size = { width = 178, height = 140 }
+right_padding = 25
+
+[elixir_bar]
+top_left = { x = 296, y = 1852 }
+size = { width = 745, height = 44 }

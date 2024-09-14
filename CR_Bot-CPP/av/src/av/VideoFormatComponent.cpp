@@ -1,5 +1,5 @@
-#include "VideoFormatComponent.h"
-#include "VideoFormat.hpp"
+#include "av/VideoFormatComponent.h"
+#include "av/VideoFormat.hpp"
 
 namespace av {
 	VideoFormatComponent::VideoFormatComponent(VideoFormat* format, size_t index) {

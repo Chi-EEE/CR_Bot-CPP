@@ -1,28 +1,15 @@
 add_rules("mode.debug", "mode.release")
 
-add_requires("platform-tools 35.0.0")
-add_requires("onnxruntime 1.19.2")
-add_requires("ffmpeg 7.0.2", {configs = {debug = false}})
-add_requires("opencv", {configs = {debug = false}})
 add_requires("boost", {configs = {iostreams = true}})
-add_requires("toml++")
-add_requires("tobiaslocker_base64")
-
-add_requires("fmt")
 add_requires("spdlog", {configs = {fmt_external = true}})
 -- add_requires("sfml", "imgui-sfml v2.6")
 
-add_syslinks("kernel32", "shell32")
+includes("common/xmake.lua", "av/xmake.lua")
 
 target("CR_Bot-CPP", function()
     set_kind("binary")
     set_languages("c++17")
-    add_packages("platform-tools")
-    add_packages("onnxruntime")
-    add_packages("ffmpeg", "opencv")
     add_packages("boost")
-    add_packages("toml++")
-    add_packages("tobiaslocker_base64")
     add_packages("fmt")
     add_packages("spdlog")
 
@@ -34,15 +21,36 @@ target("CR_Bot-CPP", function()
         add_defines("NOMINMAX")
         add_cxflags("/utf-8")
     end
-    -- add_packages("sfml", "imgui-sfml")
 
     add_files("src/**.cpp")
-    add_headerfiles("src/**.h", "src/**.hpp")
 
     add_defines("BOOST_ASIO_DISABLE_CONCEPTS")
 
-    add_configfiles("config.toml")
+    add_configfiles("(constants/**.toml)")
+    add_configfiles("(config.toml)")
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")
 
-    -- set_runargs("c:/Users/admin/Documents/GitHub/ClashRoyaleBuildABot/clashroyalebuildabot/models/units_M_480x352.onnx")
+    add_deps("common", {public = true})
 end)
+
+add_requires("doctest")
+for _, file in ipairs(os.files("tests/*.cpp")) do
+    local name = path.basename(file)
+    target(name, function()
+        set_kind("binary")
+        set_default(false)
+        set_languages("c++17")
+        set_group("tests")
+        add_packages("doctest")
+        
+        if is_plat("windows") then
+            add_defines("WIN32")
+            add_defines("NOMINMAX")
+            add_cxflags("/utf-8")
+        end
+        
+        add_files("tests/" .. name .. ".cpp")
+
+        add_deps("common", {public = true})
+    end)
+end
