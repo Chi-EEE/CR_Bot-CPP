@@ -9,11 +9,12 @@
 #include <spdlog/spdlog.h>
 #include <opencv2/opencv.hpp>
 
+#include "Card.hpp"
+
 namespace card {
 	class Detector {
 	public:
 		Detector() {
 		}
-
 	};
 }

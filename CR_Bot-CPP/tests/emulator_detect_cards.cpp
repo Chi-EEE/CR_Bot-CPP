@@ -3,12 +3,14 @@
 
 #include "Emulator.hpp"
 #include "card/Cropper.hpp"
+#include "card/Loader.hpp"
 #include "card/Detector.hpp"
 
 int main() {
 	Emulator emulator("emulator-5554");
 	cv::Mat screenshot = emulator.screenshot();
 	card::Cropper cropper;
+	card::Loader loader;
 	card::Detector detector;
 
 	cv::Mat first_card = cropper.crop_card_min(screenshot, card::CardHand::First);
@@ -17,6 +19,5 @@ int main() {
 	cv::Mat fourth_card = cropper.crop_card_min(screenshot, card::CardHand::Fourth);
 	cv::Mat next_card = cropper.crop_card_min(screenshot, card::CardHand::Next);
 
-	cv::waitKey(0);
 	return 0;
 }

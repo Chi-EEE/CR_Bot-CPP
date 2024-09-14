@@ -1,8 +1,21 @@
 #pragma once
 
+#include <string>
+
+#include <cpp-dump.hpp>
+
 namespace card {
+	struct BaseCard {
+		std::string path;
+		int id = 0;
+		int elixir = 0;
+		std::optional<std::string> evo_path;
+		bool china = false;
+	};
+
 	enum class Card {
 		Blank,
+
 		// Common Troop Cards
 		Minions,
 		Archers,
@@ -141,3 +154,5 @@ namespace card {
 		Goblin_Drill
 	};
 }
+
+CPP_DUMP_DEFINE_EXPORT_OBJECT(card::BaseCard, id, elixir, path, evo_path);
