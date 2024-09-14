@@ -1,17 +1,17 @@
 [arena]
-top_left = { x = 87, y = 157 }
-size = { width = 905, height = 1312 }
-tile_size = { width = 18, height = 32 }
+top_left = { x = 60, y = 1106 }
+size = { width = 597, height = 872 }
+tile_size = { width = 32, height = 28 }
 
 [next_card]
-top_left = { x = 64, y = 1792 }
-size = { width = 82, height = 65 }
+top_left = { x = 41, y = 1196 }
+size = { width = 52, height = 66 }
 
 [card]
-top_left = { x = 251, y = 1600 }
-size = { width = 178, height = 140 }
-right_padding = 25
+top_left = { x = 165, y = 1066 }
+size = { width = 119, height = 150 }
+right_padding = 16
 
 [elixir_bar]
-top_left = { x = 296, y = 1852 }
-size = { width = 745, height = 44 }
+top_left = { x = 195, y = 1231 }
+size = { width = 497, height = 37 }
