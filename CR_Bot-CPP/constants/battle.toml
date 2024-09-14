@@ -6,10 +6,12 @@ tile_size = { width = 32, height = 28 }
 [next_card]
 top_left = { x = 41, y = 1196 }
 size = { width = 52, height = 66 }
+final_crop_height = 52  # This is the height of the card without the elixir count
 
 [card]
 top_left = { x = 165, y = 1066 }
 size = { width = 119, height = 150 }
+final_crop_height = 111 # This is the height of the card without the elixir count
 right_padding = 16
 
 [elixir_bar]

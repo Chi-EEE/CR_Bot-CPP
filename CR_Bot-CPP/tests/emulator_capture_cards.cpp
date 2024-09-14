@@ -9,20 +9,31 @@ int main() {
 	cv::Mat screenshot = emulator.screenshot();
 	card::Cropper cropper;
 
-	cv::Mat first_card = cropper.crop_card(screenshot, card::Card::First);
+	cv::Mat first_card = cropper.crop_card(screenshot, card::CardHand::First);
+	cv::Mat second_card = cropper.crop_card(screenshot, card::CardHand::Second);
+	cv::Mat third_card = cropper.crop_card(screenshot, card::CardHand::Third);
+	cv::Mat fourth_card = cropper.crop_card(screenshot, card::CardHand::Fourth);
+	cv::Mat next_card = cropper.crop_card(screenshot, card::CardHand::Next);
+
 	cv::imshow("First Card", first_card);
-
-	cv::Mat second_card = cropper.crop_card(screenshot, card::Card::Second);
 	cv::imshow("Second Card", second_card);
-
-	cv::Mat third_card = cropper.crop_card(screenshot, card::Card::Third);
 	cv::imshow("Third Card", third_card);
-
-	cv::Mat fourth_card = cropper.crop_card(screenshot, card::Card::Fourth);
 	cv::imshow("Fourth Card", fourth_card);
-
-	cv::Mat next_card = cropper.crop_card(screenshot, card::Card::Next);
 	cv::imshow("Next Card", next_card);
+
+	cv::waitKey(0);
+
+	cv::Mat first_card_min = cropper.crop_card_min(screenshot, card::CardHand::First);
+	cv::Mat second_card_min = cropper.crop_card_min(screenshot, card::CardHand::Second);
+	cv::Mat third_card_min = cropper.crop_card_min(screenshot, card::CardHand::Third);
+	cv::Mat fourth_card_min = cropper.crop_card_min(screenshot, card::CardHand::Fourth);
+	cv::Mat next_card_min = cropper.crop_card_min(screenshot, card::CardHand::Next);
+
+	cv::imshow("First Card", first_card_min);
+	cv::imshow("Second Card", second_card_min);
+	cv::imshow("Third Card", third_card_min);
+	cv::imshow("Fourth Card", fourth_card_min);
+	cv::imshow("Next Card", next_card_min);
 
 	cv::waitKey(0);
 	return 0;
