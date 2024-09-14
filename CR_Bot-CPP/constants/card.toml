@@ -1,138 +1,138 @@
-card.blank = {elixir = 0, id = 0, path = "card/blank.png"}
+card.blank = {elixir = 0, id = 0, path = "assets/cards/blank.png"}
 
 # Common Troop Cards
-card.minions = {elixir = 3, id = 26000005, path = "card/minions.png"}
-card.archers = {elixir = 3, id = 26000001, path = "card/archers.png", evo_path = "card/archers_evo.png"}
-card.knight = {elixir = 3, id = 26000000, path = "card/knight.png", evo_path = "card/knight_evo.png"}
-card.spear_goblins = {elixir = 2, id = 26000019, path = "card/spear_goblins.png"}
-card.goblins = {elixir = 2, id = 26000002, path = "card/goblins.png"}
-card.bomber = {elixir = 2, id = 26000013, path = "card/bomber.png", evo_path = "card/bomber_evo.png"}
-card.skeletons = {elixir = 1, id = 26000010, path = "card/skeletons.png", evo_path = "card/skeletons_evo.png"}
-card.barbarians = {elixir = 5, id = 26000008, path = "card/barbarians.png", evo_path = "card/barbarians_evo.png"}
-card.electro_spirit = {elixir = 1, id = 26000084, path = "card/electro_spirit.png"}
-card.skeleton_dragons = {elixir = 4, id = 26000080, path = "card/skeleton_dragons.png"}
-card.fire_spirit = {elixir = 1, id = 26000031, path = "card/fire_spirit.png"}
-card.bats = {elixir = 1, id = 26000049, path = "card/bats.png", evo_path = "card/bats_evo.png"}
-card.royal_recruits = {elixir = 7, id = 26000047, path = "card/royal_recruits.png", evo_path = "card/royal_recruits_evo.png"}
-card.royal_giant = {elixir = 5, id = 26000024, path = "card/royal_giant.png", evo_path = "card/royal_giant_evo.png"}
-card.ice_spirit = {elixir = 1, id = 26000030, path = "card/ice_spirit.png", evo_path = "card/ice_spirit_evo.png"}
-card.skeleton_barrel = {elixir = 3, id = 26000056, path = "card/skeleton_barrel.png"}
-card.goblin_gang = {elixir = 3, id = 26000041, path = "card/goblin_gang.png"}
-card.elite_barbarians = {elixir = 6, id = 26000043, path = "card/elite_barbarians.png"}
-card.minion_horde = {elixir = 5, id = 26000022, path = "card/minion_horde.png"}
-card.firecracker = {elixir = 3, id = 26000064, path = "card/firecracker.png", evo_path = "card/firecracker_evo.png"}
-card.rascals = {elixir = 5, id = 26000053, path = "card/rascals.png"}
+card.minions = {elixir = 3, id = 26000005, path = "assets/cards/minions.png"}
+card.archers = {elixir = 3, id = 26000001, path = "assets/cards/archers.png", evo_path = "assets/cards/archers_evo.png"}
+card.knight = {elixir = 3, id = 26000000, path = "assets/cards/knight.png", evo_path = "assets/cards/knight_evo.png"}
+card.spear_goblins = {elixir = 2, id = 26000019, path = "assets/cards/spear_goblins.png"}
+card.goblins = {elixir = 2, id = 26000002, path = "assets/cards/goblins.png"}
+card.bomber = {elixir = 2, id = 26000013, path = "assets/cards/bomber.png", evo_path = "assets/cards/bomber_evo.png"}
+card.skeletons = {elixir = 1, id = 26000010, path = "assets/cards/skeletons.png", evo_path = "assets/cards/skeletons_evo.png"}
+card.barbarians = {elixir = 5, id = 26000008, path = "assets/cards/barbarians.png", evo_path = "assets/cards/barbarians_evo.png"}
+card.electro_spirit = {elixir = 1, id = 26000084, path = "assets/cards/electro_spirit.png"}
+card.skeleton_dragons = {elixir = 4, id = 26000080, path = "assets/cards/skeleton_dragons.png"}
+card.fire_spirit = {elixir = 1, id = 26000031, path = "assets/cards/fire_spirit.png"}
+card.bats = {elixir = 1, id = 26000049, path = "assets/cards/bats.png", evo_path = "assets/cards/bats_evo.png"}
+card.royal_recruits = {elixir = 7, id = 26000047, path = "assets/cards/royal_recruits.png", evo_path = "assets/cards/royal_recruits_evo.png"}
+card.royal_giant = {elixir = 5, id = 26000024, path = "assets/cards/royal_giant.png", evo_path = "assets/cards/royal_giant_evo.png"}
+card.ice_spirit = {elixir = 1, id = 26000030, path = "assets/cards/ice_spirit.png", evo_path = "assets/cards/ice_spirit_evo.png"}
+card.skeleton_barrel = {elixir = 3, id = 26000056, path = "assets/cards/skeleton_barrel.png"}
+card.goblin_gang = {elixir = 3, id = 26000041, path = "assets/cards/goblin_gang.png"}
+card.elite_barbarians = {elixir = 6, id = 26000043, path = "assets/cards/elite_barbarians.png"}
+card.minion_horde = {elixir = 5, id = 26000022, path = "assets/cards/minion_horde.png"}
+card.firecracker = {elixir = 3, id = 26000064, path = "assets/cards/firecracker.png", evo_path = "assets/cards/firecracker_evo.png"}
+card.rascals = {elixir = 5, id = 26000053, path = "assets/cards/rascals.png"}
 
 # Rare Troop Cards
-card.mini_pekka = {elixir = 4, id = 26000018, path = "card/mini_pekka.png"}
-card.musketeer = {elixir = 4, id = 26000014, path = "card/musketeer.png"}
-card.giant = {elixir = 5, id = 26000003, path = "card/giant.png"}
-card.valkyrie = {elixir = 4, id = 26000011, path = "card/valkyrie.png", evo_path = "card/valkyrie_evo.png"}
-card.mega_minion = {elixir = 3, id = 26000039, path = "card/mega_minion.png"}
-card.battle_ram = {elixir = 4, id = 26000036, path = "card/battle_ram.png", evo_path = "card/battle_ram_evo.png"}
-card.wizard = {elixir = 5, id = 26000017, path = "card/wizard.png", evo_path = "card/wizard_evo.png"}
-card.flying_machine = {elixir = 4, id = 26000057, path = "card/flying_machine.png"}
-card.hog_rider = {elixir = 4, id = 26000021, path = "card/hog_rider.png"}
-card.royal_hogs = {elixir = 5, id = 26000059, path = "card/royal_hogs.png"}
-card.three_musketeers = {elixir = 9, id = 26000028, path = "card/three_musketeers.png"}
-card.battle_healer = {elixir = 4, id = 26000068, path = "card/battle_healer.png"}
-card.ice_golem = {elixir = 2, id = 26000038, path = "card/ice_golem.png"}
-card.dart_goblin = {elixir = 3, id = 26000027, path = "card/dart_goblin.png"}
-card.zappies = {elixir = 4, id = 26000052, path = "card/zappies.png"}
-card.heal_spirit = {elixir = 1, id = 28000016, path = "card/heal_spirit.png"}
-card.elixir_golem = {elixir = 3, id = 26000067, path = "card/elixir_golem.png"}
-card.goblin_demolisher = {elixir = 4, id = 26000095, path = "card/goblin_demolisher.png"}
-card.suspicious_bush = {elixir = 2, id = 26000097, path = "card/suspicious_bush.png"}
+card.mini_pekka = {elixir = 4, id = 26000018, path = "assets/cards/mini_pekka.png"}
+card.musketeer = {elixir = 4, id = 26000014, path = "assets/cards/musketeer.png"}
+card.giant = {elixir = 5, id = 26000003, path = "assets/cards/giant.png"}
+card.valkyrie = {elixir = 4, id = 26000011, path = "assets/cards/valkyrie.png", evo_path = "assets/cards/valkyrie_evo.png"}
+card.mega_minion = {elixir = 3, id = 26000039, path = "assets/cards/mega_minion.png"}
+card.battle_ram = {elixir = 4, id = 26000036, path = "assets/cards/battle_ram.png", evo_path = "assets/cards/battle_ram_evo.png"}
+card.wizard = {elixir = 5, id = 26000017, path = "assets/cards/wizard.png", evo_path = "assets/cards/wizard_evo.png"}
+card.flying_machine = {elixir = 4, id = 26000057, path = "assets/cards/flying_machine.png"}
+card.hog_rider = {elixir = 4, id = 26000021, path = "assets/cards/hog_rider.png"}
+card.royal_hogs = {elixir = 5, id = 26000059, path = "assets/cards/royal_hogs.png"}
+card.three_musketeers = {elixir = 9, id = 26000028, path = "assets/cards/three_musketeers.png"}
+card.battle_healer = {elixir = 4, id = 26000068, path = "assets/cards/battle_healer.png"}
+card.ice_golem = {elixir = 2, id = 26000038, path = "assets/cards/ice_golem.png"}
+card.dart_goblin = {elixir = 3, id = 26000027, path = "assets/cards/dart_goblin.png"}
+card.zappies = {elixir = 4, id = 26000052, path = "assets/cards/zappies.png"}
+card.heal_spirit = {elixir = 1, id = 28000016, path = "assets/cards/heal_spirit.png"}
+card.elixir_golem = {elixir = 3, id = 26000067, path = "assets/cards/elixir_golem.png"}
+card.goblin_demolisher = {elixir = 4, id = 26000095, path = "assets/cards/goblin_demolisher.png"}
+card.suspicious_bush = {elixir = 2, id = 26000097, path = "assets/cards/suspicious_bush.png"}
 
 # Epic Troop Cards
-card.guards = {elixir = 3, id = 26000025, path = "card/guards.png"}
-card.baby_dragon = {elixir = 4, id = 26000015, path = "card/baby_dragon.png"}
-card.skeleton_army = {elixir = 3, id = 26000012, path = "card/skeleton_army.png"}
-card.witch = {elixir = 5, id = 26000007, path = "card/witch.png"}
-card.pekka = {elixir = 7, id = 26000004, path = "card/pekka.png", evo_path = "card/pekka_evo.png"}
-card.dark_prince = {elixir = 4, id = 26000040, path = "card/dark_prince.png"}
-card.prince = {elixir = 5, id = 26000016, path = "card/prince.png"}
-card.balloon = {elixir = 5, id = 26000006, path = "card/balloon.png"}
-card.giant_skeleton = {elixir = 6, id = 26000020, path = "card/giant_skeleton.png"}
-card.goblin_giant = {elixir = 6, id = 26000060, path = "card/goblin_giant.png", evo_path = "card/goblin_giant_evo.png"}
-card.hunter = {elixir = 4, id = 26000044, path = "card/hunter.png"}
-card.golem = {elixir = 4, id = 26000009, path = "card/golem.png"}
-card.electro_dragon = {elixir = 5, id = 26000063, path = "card/electro_dragon.png"}
-card.wall_breakers = {elixir = 2, id = 26000058, path = "card/wall_breakers.png", evo_path = "card/wall_breakers_evo.png"}
-card.electro_giant = {elixir = 7, id = 26000085, path = "card/electro_giant.png"}
-card.bowler = {elixir = 5, id = 26000034, path = "card/bowler.png"}
-card.executioner = {elixir = 5, id = 26000045, path = "card/executioner.png"}
-card.cannon_cart = {elixir = 5, id = 26000054, path = "card/cannon_cart.png"}
+card.guards = {elixir = 3, id = 26000025, path = "assets/cards/guards.png"}
+card.baby_dragon = {elixir = 4, id = 26000015, path = "assets/cards/baby_dragon.png"}
+card.skeleton_army = {elixir = 3, id = 26000012, path = "assets/cards/skeleton_army.png"}
+card.witch = {elixir = 5, id = 26000007, path = "assets/cards/witch.png"}
+card.pekka = {elixir = 7, id = 26000004, path = "assets/cards/pekka.png", evo_path = "assets/cards/pekka_evo.png"}
+card.dark_prince = {elixir = 4, id = 26000040, path = "assets/cards/dark_prince.png"}
+card.prince = {elixir = 5, id = 26000016, path = "assets/cards/prince.png"}
+card.balloon = {elixir = 5, id = 26000006, path = "assets/cards/balloon.png"}
+card.giant_skeleton = {elixir = 6, id = 26000020, path = "assets/cards/giant_skeleton.png"}
+card.goblin_giant = {elixir = 6, id = 26000060, path = "assets/cards/goblin_giant.png", evo_path = "assets/cards/goblin_giant_evo.png"}
+card.hunter = {elixir = 4, id = 26000044, path = "assets/cards/hunter.png"}
+card.golem = {elixir = 4, id = 26000009, path = "assets/cards/golem.png"}
+card.electro_dragon = {elixir = 5, id = 26000063, path = "assets/cards/electro_dragon.png"}
+card.wall_breakers = {elixir = 2, id = 26000058, path = "assets/cards/wall_breakers.png", evo_path = "assets/cards/wall_breakers_evo.png"}
+card.electro_giant = {elixir = 7, id = 26000085, path = "assets/cards/electro_giant.png"}
+card.bowler = {elixir = 5, id = 26000034, path = "assets/cards/bowler.png"}
+card.executioner = {elixir = 5, id = 26000045, path = "assets/cards/executioner.png"}
+card.cannon_cart = {elixir = 5, id = 26000054, path = "assets/cards/cannon_cart.png"}
 
 # Legendary Troop Cards
-card.mega_knight = {elixir = 7, id = 26000055, path = "card/mega_knight.png", evo_path = "card/mega_knight_evo.png"}
-card.ram_rider = {elixir = 5, id = 26000051, path = "card/ram_rider.png"}
-card.electro_wizard = {elixir = 4, id = 26000042, path = "card/electro_wizard.png"}
-card.inferno_dragon = {elixir = 4, id = 26000037, path = "card/inferno_dragon.png"}
-card.sparky = {elixir = 6, id = 26000033, path = "card/sparky.png"}
-card.miner = {elixir = 3, id = 26000032, path = "card/miner.png"}
-card.princess = {elixir = 3, id = 26000026, path = "card/princess.png"}
-card.phoenix = {elixir = 4, id = 26000087, path = "card/phoenix.png"}
-card.royal_ghost = {elixir = 3, id = 26000050, path = "card/royal_ghost.png"}
-card.ice_wizard = {elixir = 3, id = 26000023, path = "card/ice_wizard.png"}
-card.magic_archer = {elixir = 4, id = 26000062, path = "card/magic_archer.png"}
-card.bandit = {elixir = 3, id = 26000046, path = "card/bandit.png"}
-card.lava_hound = {elixir = 7, id = 26000029, path = "card/lava_hound.png"}
-card.night_witch = {elixir = 4, id = 26000048, path = "card/night_witch.png"}
-card.lumberjack = {elixir = 4, id = 26000035, path = "card/lumberjack.png"}
-card.mother_witch = {elixir = 4, id = 26000083, path = "card/mother_witch.png"}
-card.fisherman = {elixir = 3, id = 26000061, path = "card/fisherman.png"}
-card.goblin_machine = {elixir = 5, id = 26000096, path = "card/goblin_machine.png"}
+card.mega_knight = {elixir = 7, id = 26000055, path = "assets/cards/mega_knight.png", evo_path = "assets/cards/mega_knight_evo.png"}
+card.ram_rider = {elixir = 5, id = 26000051, path = "assets/cards/ram_rider.png"}
+card.electro_wizard = {elixir = 4, id = 26000042, path = "assets/cards/electro_wizard.png"}
+card.inferno_dragon = {elixir = 4, id = 26000037, path = "assets/cards/inferno_dragon.png"}
+card.sparky = {elixir = 6, id = 26000033, path = "assets/cards/sparky.png"}
+card.miner = {elixir = 3, id = 26000032, path = "assets/cards/miner.png"}
+card.princess = {elixir = 3, id = 26000026, path = "assets/cards/princess.png"}
+card.phoenix = {elixir = 4, id = 26000087, path = "assets/cards/phoenix.png"}
+card.royal_ghost = {elixir = 3, id = 26000050, path = "assets/cards/royal_ghost.png"}
+card.ice_wizard = {elixir = 3, id = 26000023, path = "assets/cards/ice_wizard.png"}
+card.magic_archer = {elixir = 4, id = 26000062, path = "assets/cards/magic_archer.png"}
+card.bandit = {elixir = 3, id = 26000046, path = "assets/cards/bandit.png"}
+card.lava_hound = {elixir = 7, id = 26000029, path = "assets/cards/lava_hound.png"}
+card.night_witch = {elixir = 4, id = 26000048, path = "assets/cards/night_witch.png"}
+card.lumberjack = {elixir = 4, id = 26000035, path = "assets/cards/lumberjack.png"}
+card.mother_witch = {elixir = 4, id = 26000083, path = "assets/cards/mother_witch.png"}
+card.fisherman = {elixir = 3, id = 26000061, path = "assets/cards/fisherman.png"}
+card.goblin_machine = {elixir = 5, id = 26000096, path = "assets/cards/goblin_machine.png"}
 
 # Champion Troop Cards
-card.golden_knight = {elixir = 4, id = 26000074, path = "card/golden_knight.png"}
-card.skeleton_king = {elixir = 4, id = 26000069, path = "card/skeleton_king.png"}
-card.archer_queen = {elixir = 5, id = 26000072, path = "card/archer_queen.png"}
-card.mighty_miner = {elixir = 4, id = 26000065, path = "card/mighty_miner.png"}
-card.little_prince = {elixir = 3, id = 26000093, path = "card/little_prince.png"}
-card.monk = {elixir = 5, id = 26000077, path = "card/monk.png"}
+card.golden_knight = {elixir = 4, id = 26000074, path = "assets/cards/golden_knight.png"}
+card.skeleton_king = {elixir = 4, id = 26000069, path = "assets/cards/skeleton_king.png"}
+card.archer_queen = {elixir = 5, id = 26000072, path = "assets/cards/archer_queen.png"}
+card.mighty_miner = {elixir = 4, id = 26000065, path = "assets/cards/mighty_miner.png"}
+card.little_prince = {elixir = 3, id = 26000093, path = "assets/cards/little_prince.png"}
+card.monk = {elixir = 5, id = 26000077, path = "assets/cards/monk.png"}
 
 # Common Spell Cards
-card.arrows = {elixir = 3, id = 28000001, path = "card/arrows.png"}
-card.zap = {elixir = 2, id = 28000008, path = "card/zap.png", evo_path = "card/zap_evo.png"}
-card.giant_snowball = {elixir = 2, id = 28000017, path = "card/giant_snowball.png"}
-card.royal_delivery = {elixir = 3, id = 28000018, path = "card/royal_delivery.png"}
+card.arrows = {elixir = 3, id = 28000001, path = "assets/cards/arrows.png"}
+card.zap = {elixir = 2, id = 28000008, path = "assets/cards/zap.png", evo_path = "assets/cards/zap_evo.png"}
+card.giant_snowball = {elixir = 2, id = 28000017, path = "assets/cards/giant_snowball.png"}
+card.royal_delivery = {elixir = 3, id = 28000018, path = "assets/cards/royal_delivery.png"}
 
 # Rare Spell Cards
-card.fireball = {elixir = 4, id = 28000000, path = "card/fireball.png"}
-card.rocket = {elixir = 6, id = 28000003, path = "card/fireball.png"}
-card.earthquake = {elixir = 3, id = 28000014, path = "card/earthquake.png"}
+card.fireball = {elixir = 4, id = 28000000, path = "assets/cards/fireball.png"}
+card.rocket = {elixir = 6, id = 28000003, path = "assets/cards/rocket.png"}
+card.earthquake = {elixir = 3, id = 28000014, path = "assets/cards/earthquake.png"}
 
 # Epic Spell Cards
-card.goblin_barrel = {elixir = 3, id = 28000004, path = "card/goblin_barrel.png", evo_path = "card/goblin_barrel_evo.png"}
-card.lightning = {elixir = 6, id = 28000007, path = "card/lightning.png"}
-card.freeze = {elixir = 4, id = 28000005, path = "card/freeze.png"}
-card.barbarian_barrel = {elixir = 2, id = 28000015, path = "card/barbarian_barrel.png"}
-card.poison = {elixir = 4, id = 28000009, path = "card/poison.png"}
-card.rage = {elixir = 2, id = 28000002, path = "card/rage.png"}
-card.clone = {elixir = 3, id = 28000013, path = "card/clone.png"}
-card.tornado = {elixir = 3, id = 28000012, path = "card/tornado.png"}
-card.mirror = {elixir = -1, id = 28000006, path = "card/mirror.png"}
-card.void = {elixir = 3, id = 28000023, path = "card/void.png"}
-card.goblin_curse = {elixir = 2, id = 28000024, path = "card/goblin_curse.png"}
-card.the_log = {elixir = 2, id = 28000011, path = "card/the_log.png"}
-card.graveyard = {elixir = 2, id = 28000010, path = "card/graveyard.png"}
+card.goblin_barrel = {elixir = 3, id = 28000004, path = "assets/cards/goblin_barrel.png", evo_path = "assets/cards/goblin_barrel_evo.png"}
+card.lightning = {elixir = 6, id = 28000007, path = "assets/cards/lightning.png"}
+card.freeze = {elixir = 4, id = 28000005, path = "assets/cards/freeze.png"}
+card.barbarian_barrel = {elixir = 2, id = 28000015, path = "assets/cards/barbarian_barrel.png"}
+card.poison = {elixir = 4, id = 28000009, path = "assets/cards/poison.png", china = true}
+card.rage = {elixir = 2, id = 28000002, path = "assets/cards/rage.png"}
+card.clone = {elixir = 3, id = 28000013, path = "assets/cards/clone.png"}
+card.tornado = {elixir = 3, id = 28000012, path = "assets/cards/tornado.png"}
+card.mirror = {elixir = -1, id = 28000006, path = "assets/cards/mirror.png"}
+card.void = {elixir = 3, id = 28000023, path = "assets/cards/void.png"}
+card.goblin_curse = {elixir = 2, id = 28000024, path = "assets/cards/goblin_curse.png"}
+card.the_log = {elixir = 2, id = 28000011, path = "assets/cards/the_log.png"}
+card.graveyard = {elixir = 2, id = 28000010, path = "assets/cards/graveyard.png"}
 
 # Common Building Cards
-card.cannon = {elixir = 3, id = 27000000, path = "card/cannon.png"}
-card.mortar = {elixir = 4, id = 27000002, path = "card/mortar.png"}
-card.tesla = {elixir = 4, id = 27000006, path = "card/tesla.png"}
+card.cannon = {elixir = 3, id = 27000000, path = "assets/cards/cannon.png"}
+card.mortar = {elixir = 4, id = 27000002, path = "assets/cards/mortar.png", evo_path = "assets/cards/mortar_evo.png"}
+card.tesla = {elixir = 4, id = 27000006, path = "assets/cards/tesla.png", evo_path = "assets/cards/tesla_evo.png"}
 
 # Rare Building Cards
-card.goblin_cage = {elixir = 4, id = 27000012, path = "card/goblin_cage.png"}
-card.goblin_hut = {elixir = 5, id = 27000001, path = "card/goblin_hut.png"}
-card.tombstone = {elixir = 3, id = 27000009, path = "card/tombstone.png"}
-card.bomb_tower = {elixir = 4, id = 27000004, path = "card/bomb_tower.png"}
-card.inferno_tower = {elixir = 5, id = 27000003, path = "card/inferno_tower.png"}
-card.barbarian_hut = {elixir = 6, id = 27000005, path = "card/barbarian_hut.png"}
-card.furnace = {elixir = 4, id = 27000010, path = "card/furnace.png"}
-card.elixir_collector = {elixir = 4, id = 27000007, path = "card/elixir_collector.png"}
+card.goblin_cage = {elixir = 4, id = 27000012, path = "assets/cards/goblin_cage.png", evo_path = "assets/cards/goblin_cage_evo.png"}
+card.goblin_hut = {elixir = 5, id = 27000001, path = "assets/cards/goblin_hut.png"}
+card.tombstone = {elixir = 3, id = 27000009, path = "assets/cards/tombstone.png"}
+card.bomb_tower = {elixir = 4, id = 27000004, path = "assets/cards/bomb_tower.png"}
+card.inferno_tower = {elixir = 5, id = 27000003, path = "assets/cards/inferno_tower.png"}
+card.barbarian_hut = {elixir = 6, id = 27000005, path = "assets/cards/barbarian_hut.png"}
+card.furnace = {elixir = 4, id = 27000010, path = "assets/cards/furnace.png"}
+card.elixir_collector = {elixir = 4, id = 27000007, path = "assets/cards/elixir_collector.png"}
 
 # Epic Building Cards
-card.x_bow = {elixir = 6, id = 27000008, path = "card/x_bow.png"}
-card.goblin_drill = {elixir = 4, id = 27000013, path = "card/goblin_drill.png"}
+card.x_bow = {elixir = 6, id = 27000008, path = "assets/cards/x_bow.png"}
+card.goblin_drill = {elixir = 4, id = 27000013, path = "assets/cards/goblin_drill.png", evo_path = "assets/cards/goblin_drill_evo.png"}

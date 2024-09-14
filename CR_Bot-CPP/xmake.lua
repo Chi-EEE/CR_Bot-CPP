@@ -26,8 +26,9 @@ target("CR_Bot-CPP", function()
 
     add_defines("BOOST_ASIO_DISABLE_CONCEPTS")
 
-    add_configfiles("(constants/**.toml)")
-    add_configfiles("(config.toml)")
+    add_configfiles("(constants/**.toml)", {onlycopy = true})
+    add_configfiles("(config.toml)", {onlycopy = true})
+    add_configfiles("(assets/**.png)", {onlycopy = true})
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")
 
     add_deps("common", {public = true})
