@@ -5,7 +5,7 @@
 #include "card/Cropper.hpp"
 
 int main() {
-	Emulator emulator("emulator-5554");
+	Emulator emulator("emulator-5556");
 	cv::Mat screenshot = emulator.screenshot();
 	card::Cropper cropper;
 
@@ -21,6 +21,11 @@ int main() {
 	cv::imshow("Fourth Card", fourth_card);
 	cv::imshow("Next Card", next_card);
 
+	cv::imwrite("first_card.png", first_card);
+	cv::imwrite("second_card.png", second_card);
+	cv::imwrite("third_card.png", third_card);
+	cv::imwrite("fourth_card.png", fourth_card);
+
 	cv::waitKey(0);
 
 	cv::Mat first_card_min = cropper.crop_card_min(screenshot, card::CardHand::First);
@@ -34,6 +39,11 @@ int main() {
 	cv::imshow("Third Card", third_card_min);
 	cv::imshow("Fourth Card", fourth_card_min);
 	cv::imshow("Next Card", next_card_min);
+
+	cv::imwrite("first_card_min.png", first_card_min);
+	cv::imwrite("second_card_min.png", second_card_min);
+	cv::imwrite("third_card_min.png", third_card_min);
+	cv::imwrite("fourth_card_min.png", fourth_card_min);
 
 	cv::waitKey(0);
 	return 0;
