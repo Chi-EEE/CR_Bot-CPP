@@ -29,19 +29,15 @@ int main() {
 	cv::Mat third_card = cropper.crop_card(image, card::CardHand::Third);
 	cv::Mat fourth_card = cropper.crop_card(image, card::CardHand::Fourth);
 
-	auto [detectedCards, ready] = detector.run({
+	auto detected_cards = detector.run({
 		first_card,
 		second_card,
 		third_card,
 		fourth_card,
 		});
 
-	for (const auto& card : detectedCards) {
+	for (const auto& card : detected_cards) {
 		cpp_dump(card.type);
-	}
-
-	for (const auto& index : ready) {
-		std::cout << "Card " << index + 1 << " is ready" << std::endl;
 	}
 
 	return 0;
