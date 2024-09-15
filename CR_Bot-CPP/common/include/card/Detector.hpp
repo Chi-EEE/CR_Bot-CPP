@@ -58,8 +58,8 @@ namespace card {
 			);
 
 			std::vector<card::BaseCard> detectedCards;
-			for (const auto& [l, r] : assignments) {
-				detectedCards.push_back(this->cards[l]);
+			for (const auto& [card_index, order] : assignments) {
+				detectedCards.push_back(this->cards[card_index]);
 			}
 
 			return detectedCards;
