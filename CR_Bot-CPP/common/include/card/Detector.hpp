@@ -34,6 +34,38 @@ namespace card {
 			this->card_hashes = calculateCardHashes();
 		}
 
+		// Returns the detected cards not in order
+		std::vector<card::BaseCard> detect_cards(std::vector<cv::Mat> cards) {
+			Eigen::MatrixXf cropHashes(HASH_SIZE * HASH_SIZE, cards.size());
+
+			for (int i = 0; i < cards.size(); ++i) {
+				Eigen::MatrixXf hash = calculateHash(cards[i]);
+				cropHashes.col(i) = Eigen::Map<Eigen::VectorXf>(hash.data(), hash.size());
+			}
+
+			// Use Munkres Algorithm to find the best match
+			auto assignments = munkres_algorithm<float>(
+				this->card_hashes.size(), cards.size(),
+				[&](unsigned l, unsigned r) -> float {
+					// Cost is the mean absolute difference between the hashes
+					return (cropHashes.col(r) - Eigen::Map<Eigen::VectorXf>(this->card_hashes[l][0].data(), HASH_SIZE * HASH_SIZE)).cwiseAbs().mean();
+				}
+			);
+
+			std::vector<card::BaseCard> detectedCards;
+			for (const auto& [l, r] : assignments) {
+				detectedCards.push_back(this->cards[l]);
+			}
+
+			return detectedCards;
+		}
+
+		std::vector<card::BaseCard> run(std::vector<cv::Mat> card_images) {
+			auto cards = detect_cards(card_images);
+			return cards;
+		}
+
+	private:
 		Eigen::MatrixXf calculateMultiHash(const cv::Mat& image) {
 			Eigen::MatrixXf grayImage = calculateHash(image);
 
@@ -90,47 +122,5 @@ namespace card {
 			return cardHashes;
 		}
 
-		std::vector<card::BaseCard> detectCards(std::vector<cv::Mat> cards) {
-			Eigen::MatrixXf cropHashes(HASH_SIZE * HASH_SIZE, cards.size());
-
-			for (int i = 0; i < cards.size(); ++i) {
-				Eigen::MatrixXf hash = calculateHash(cards[i]);
-				cropHashes.col(i) = Eigen::Map<Eigen::VectorXf>(hash.data(), hash.size());
-			}
-
-			// Use Munkres Algorithm to find the best match
-			auto assignments = munkres_algorithm<float>(
-				this->card_hashes.size(), cards.size(),
-				[&](unsigned l, unsigned r) -> float {
-					// Cost is the mean absolute difference between the hashes
-					return (cropHashes.col(r) - Eigen::Map<Eigen::VectorXf>(this->card_hashes[l][0].data(), HASH_SIZE * HASH_SIZE)).cwiseAbs().mean();
-				}
-			);
-
-			std::vector<card::BaseCard> detectedCards;
-			for (const auto& [l, r] : assignments) {
-				detectedCards.push_back(this->cards[l]);
-			}
-
-			return detectedCards;
-		}
-
-		std::vector<int> detectIfReady(const std::vector<cv::Mat>& crops) {
-			std::vector<int> ready;
-			for (size_t i = 1; i < crops.size(); ++i) {
-				cv::Scalar stddev;
-				cv::meanStdDev(crops[i], cv::noArray(), stddev);
-				if (stddev[0] > GREY_STD_THRESHOLD) {
-					ready.push_back(i - 1);
-				}
-			}
-			return ready;
-		}
-
-		std::pair<std::vector<card::BaseCard>, std::vector<int>> run(std::vector<cv::Mat> card_images) {
-			auto cards = detectCards(card_images);
-			std::vector<int> ready = detectIfReady(card_images);
-			return { cards, ready };
-		}
 	};
 }
