@@ -11,6 +11,7 @@ int main() {
 	auto program_dir = boost::dll::program_location().parent_path();
 	auto cards_path = program_dir / "assets" / "cards";
 	std::set<std::string> card_images;
+	bool unused_card_images = false;
 	for (const auto& entry : std::filesystem::directory_iterator(cards_path.string()))
 	{
 		if (entry.is_directory())
@@ -26,6 +27,7 @@ int main() {
 		std::filesystem::path card_path = std::filesystem::path(card.path).make_preferred();
 		if (!card_images.count(card_path.string())) {
 			std::cerr << fmt::format("Card image not found: {}", card_path.string()) << std::endl;
+			unused_card_images = true;
 		}
 		else {
 			card_images.erase(card_path.string());
@@ -35,6 +37,7 @@ int main() {
 			auto card_evo_path = std::filesystem::path(card.evo_path.value()).make_preferred();
 			if (!card_images.count(card_evo_path.string())) {
 				std::cerr << fmt::format("Evo Card image not found: {}", card_evo_path.string()) << std::endl;
+				unused_card_images = true;
 			}
 			else {
 				card_images.erase(card_evo_path.string());
@@ -52,6 +55,7 @@ int main() {
 			).make_preferred();
 			if (!card_images.count(card_china_path.string())) {
 				std::cerr << fmt::format("China Card image not found: {}", card_china_path.string()) << std::endl;
+				unused_card_images = true;
 			}
 			else {
 				card_images.erase(card_china_path.string());
@@ -59,9 +63,13 @@ int main() {
 		}
 		}
 	);
-
-	for (const auto& card_image : card_images) {
-		std::cerr << fmt::format("Unused card image: {}", card_image) << std::endl;
+	if (!unused_card_images && card_images.empty()) {
+		std::cerr << "All card images are used" << std::endl;
+	}
+	else {
+		for (const auto& card_image : card_images) {
+			std::cerr << fmt::format("Unused card image: {}", card_image) << std::endl;
+		}
 	}
 
 	return 0;
