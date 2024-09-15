@@ -1,3 +1,6 @@
+temp/*
+!temp/.gitkeep
+
 # Xmake cache
 .xmake/
 build/

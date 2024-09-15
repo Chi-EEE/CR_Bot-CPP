@@ -9,10 +9,11 @@ size = { width = 52, height = 66 }
 final_crop_height = 52  # This is the height of the card without the elixir count
 
 [card]
-top_left = { x = 165, y = 1066 }
+top_left = { x = 174, y = 1075 }
 size = { width = 119, height = 150 }
-final_crop_height = 111 # This is the height of the card without the elixir count
-right_padding = 16
+inner_card_size = { width = 102, height = 102 }
+inner_card_coords = { x = 9, y = 9 } # This is the top left corner of the inner crop of the card
+right_padding = 33
 
 [elixir_bar]
 top_left = { x = 195, y = 1231 }

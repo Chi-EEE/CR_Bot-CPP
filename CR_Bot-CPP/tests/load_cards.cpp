@@ -6,6 +6,7 @@
 #include <magic_enum_utility.hpp>
 
 #include "card/Loader.hpp"
+#include "card/Card.hpp"
 
 int main() {
 	auto program_dir = boost::dll::program_location().parent_path();
