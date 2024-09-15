@@ -52,6 +52,11 @@ namespace card {
 				}
 			);
 
+			std::sort(assignments.begin(), assignments.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+				return a.second < b.second;
+				}
+			);
+
 			std::vector<card::BaseCard> detectedCards;
 			for (const auto& [l, r] : assignments) {
 				detectedCards.push_back(this->cards[l]);
