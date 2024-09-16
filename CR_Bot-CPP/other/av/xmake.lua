@@ -7,6 +7,7 @@ add_syslinks("kernel32", "shell32")
 target("av", function() 
     set_kind("$(kind)")
     set_languages("c++17")
+    set_group("other")
 
     add_packages("opencv", "ffmpeg", {public = true})
     

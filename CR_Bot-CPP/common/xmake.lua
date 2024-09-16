@@ -12,11 +12,12 @@ add_requires("eigen")
 add_requires("magic_enum")
 add_requires("cpp-dump")
 add_requires("munkres-algorithm")
+add_requires("sol2")
 
 add_requires("fmt")
 add_requires("spdlog", {configs = {fmt_external = true}})
 
-target("common", function()
+target("CR_Bot.Common", function()
     set_kind("headeronly")
     set_languages("c++17")
 
@@ -32,6 +33,7 @@ target("common", function()
     add_packages("magic_enum", {public = true})
     add_packages("cpp-dump", {public = true})
     add_packages("munkres-algorithm", {public = true})
+    add_packages("sol2", {public = true})
 
     add_headerfiles("include/(**.hpp)")
     add_includedirs("include", {public = true})
