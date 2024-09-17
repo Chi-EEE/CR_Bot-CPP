@@ -13,7 +13,7 @@ int main()
 	}
 
 	Bot& bot = maybe_bot.value();
-	//bot.run();
+	bot.run();
 
 	std::cout << "Done";
 	return 0;

@@ -34,7 +34,6 @@ namespace card {
 			this->card_hashes = calculateCardHashes();
 		}
 
-		// Returns the detected cards not in order
 		std::vector<card::BaseCard> detect_cards(std::vector<cv::Mat> cards) {
 			Eigen::MatrixXf cropHashes(HASH_SIZE * HASH_SIZE, cards.size());
 
