@@ -12,7 +12,7 @@
 #include <opencv2/opencv.hpp>
 #include <magic_enum.hpp>
 
-#include "card/BaseCard.hpp"
+#include "common/card/BaseCard.hpp"
 
 namespace card {
 	class Loader {

@@ -38,5 +38,5 @@ target("CR_Bot.Common", function()
     add_headerfiles("include/(**.hpp)")
     add_includedirs("include", {public = true})
 
-    add_deps("av", {public = true})
+    add_deps("av", "emulator", {public = true})
 end)

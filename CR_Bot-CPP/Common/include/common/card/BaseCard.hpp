@@ -5,7 +5,7 @@
 
 #include <cpp-dump.hpp>
 
-#include "card/Card.hpp"
+#include "common/card/Card.hpp"
 
 namespace card
 {

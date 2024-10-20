@@ -1,1 +1,4 @@
-includes("av/xmake.lua")
+includes(
+    "av/xmake.lua",
+    "emulator/xmake.lua"
+)

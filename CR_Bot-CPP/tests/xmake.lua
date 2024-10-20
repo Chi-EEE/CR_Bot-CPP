@@ -20,5 +20,6 @@ for _, file in ipairs(os.files("*.cpp")) do
         add_files(name .. ".cpp")
 
         add_deps("CR_Bot.Common", {public = true})
+        add_deps("emulator", {public = true})
     end)
 end

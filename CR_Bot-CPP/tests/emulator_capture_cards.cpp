@@ -1,11 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include <spdlog/spdlog.h>
 
-#include "Emulator.hpp"
-#include "card/Cropper.hpp"
+#include "emulator/Emulator.h"
+#include "common/card/Cropper.hpp"
 
 int main() {
-	Emulator emulator("emulator-5556");
+	emulator::Emulator emulator("emulator-5556");
 	cv::Mat screenshot = emulator.screenshot();
 	card::Cropper cropper;
 

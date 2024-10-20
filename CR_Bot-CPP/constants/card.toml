@@ -57,7 +57,7 @@ card.giant_skeleton = {elixir = 6, id = 26000020, path = "assets/cards/giant_ske
 card.goblin_giant = {elixir = 6, id = 26000060, path = "assets/cards/goblin_giant.png", evo_path = "assets/cards/goblin_giant_evo.png"}
 card.hunter = {elixir = 4, id = 26000044, path = "assets/cards/hunter.png"}
 card.golem = {elixir = 4, id = 26000009, path = "assets/cards/golem.png"}
-card.electro_dragon = {elixir = 5, id = 26000063, path = "assets/cards/electro_dragon.png"}
+card.electro_dragon = {elixir = 5, id = 26000063, path = "assets/cards/electro_dragon.png", evo_path = "assets/cards/electro_dragon_evo.png"}
 card.wall_breakers = {elixir = 2, id = 26000058, path = "assets/cards/wall_breakers.png", evo_path = "assets/cards/wall_breakers_evo.png"}
 card.electro_giant = {elixir = 7, id = 26000085, path = "assets/cards/electro_giant.png"}
 card.bowler = {elixir = 5, id = 26000034, path = "assets/cards/bowler.png"}
@@ -91,6 +91,7 @@ card.archer_queen = {elixir = 5, id = 26000072, path = "assets/cards/archer_quee
 card.mighty_miner = {elixir = 4, id = 26000065, path = "assets/cards/mighty_miner.png"}
 card.little_prince = {elixir = 3, id = 26000093, path = "assets/cards/little_prince.png"}
 card.monk = {elixir = 5, id = 26000077, path = "assets/cards/monk.png"}
+card.goblinstein = {elixir = 5, id = 26000099, path = "assets/cards/goblinstein.png"}
 
 # Common Spell Cards
 card.arrows = {elixir = 3, id = 28000001, path = "assets/cards/arrows.png"}

@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <filesystem>
 
-#include "card/Cropper.hpp"
-#include "card/BaseCard.hpp"
+#include "common/card/Cropper.hpp"
+#include "common/card/BaseCard.hpp"
 #include "munkres.hpp"
 
 namespace card {

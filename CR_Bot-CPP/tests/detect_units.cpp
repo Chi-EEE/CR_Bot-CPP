@@ -5,10 +5,10 @@
 #include <boost/dll.hpp>
 #include <opencv2/opencv.hpp>
 
-#include "card/Card.hpp"
-#include "card/Loader.hpp"
-#include "card/Cropper.hpp"
-#include "card/Detector.hpp"
+#include "common/card/Card.hpp"
+#include "common/card/Loader.hpp"
+#include "common/card/Cropper.hpp"
+#include "common/card/Detector.hpp"
 
 int main() {
 	auto program_dir = boost::dll::program_location().parent_path();

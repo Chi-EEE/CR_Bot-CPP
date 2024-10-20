@@ -5,6 +5,8 @@ target("CR_Bot.Lua", function()
     set_default(false)
     set_languages("c++17")
     
+    add_files("src/*.cpp")
+
     if is_plat("windows") then
         add_defines("WIN32")
         add_defines("NOMINMAX")

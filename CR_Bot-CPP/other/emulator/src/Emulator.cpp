@@ -1,4 +1,4 @@
-#pragma once
+#include "emulator/Emulator.h"
 
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream_buffer.hpp>
@@ -16,29 +16,21 @@
 
 #include "av/CodecContext.hpp"
 
-class Emulator {
-public:
-	Emulator(const std::string device_serial) : device_serial(device_serial) {
-	}
-
-	~Emulator() {
-
-	}
-
-	void click(int x, int y) {
+namespace emulator {
+	void Emulator::click(int x, int y) const {
 		this->run_adb_command({ "shell", "input", "tap", std::to_string(x), std::to_string(y) });
 	}
 
-	void start_game() {
-		this->run_adb_command({ "shell", "am", "start", "-n", "com.supercell.clashroyale/com.supercell.titan.GameApp" });
+	void Emulator::start_app(const std::string& app) const {
+		this->run_adb_command({ "shell", "am", "start", "-n", app });
 	}
 
-	void stop_game() {
-		this->run_adb_command({ "shell", "am", "force-stop", "com.supercell.clashroyale" });
+	void Emulator::stop_app(const std::string& app) const {
+		this->run_adb_command({ "shell", "am", "force-stop", app });
 	}
 
 	[[nodiscard]]
-	std::pair<int, int> get_size(const std::string device_serial) {
+	std::pair<int, int> Emulator::get_size(const std::string device_serial) const {
 		std::string size_str = this->run_adb_command_with_output({ "shell", "wm", "size" });
 		size_str = size_str.substr(std::string("Physical size: ").size(), size_str.size());
 		int width = std::stoi(size_str.substr(0, size_str.find("x")));
@@ -47,14 +39,14 @@ public:
 	}
 
 	[[nodiscard]]
-	cv::Mat screenshot() {
+	cv::Mat Emulator::screenshot() const {
 		std::string image_str = this->run_adb_command_with_output({ "exec-out", "screencap", "-p" });
 		std::vector<uint8_t> image_data(image_str.begin(), image_str.end());
 		cv::Mat image = cv::imdecode(std::move(image_data), cv::IMREAD_COLOR);
 		return image;
 	}
 
-	void start_record() {
+	void Emulator::start_record() const {
 		std::unique_ptr<av::CodecContext> codec_context = std::make_unique<av::CodecContext>();
 
 		std::vector<std::string> commands = { "exec-out", "screenrecord", "--output-format=h264", "--bit-rate", R"("5M")", "-" };
@@ -111,14 +103,14 @@ public:
 		ioc.run();
 	}
 
-	void run_adb_command(const std::vector<std::string> commands) {
+	void Emulator::run_adb_command(const std::vector<std::string> commands) const {
 		boost::process::child c(fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " ")));
 		c.wait();
 	}
 
 	// https://stackoverflow.com/a/67640372
 	[[nodiscard]]
-	std::string run_adb_command_with_output(const std::vector<std::string> commands) {
+	std::string Emulator::run_adb_command_with_output(const std::vector<std::string> commands) const {
 		boost::asio::io_context ioc;
 		std::future<std::string> data;
 		boost::process::child c(fmt::format("adb -s {} {}", this->device_serial, fmt::join(commands, " ")), boost::process::std_out > data, ioc);
@@ -129,7 +121,4 @@ public:
 
 		return data.get();
 	}
-private:
-	const std::string device_serial;
-	cv::Mat last_frame;
-};
+}

@@ -10,7 +10,7 @@
 #include <eigen3/Eigen/Core>
 #include <opencv2/opencv.hpp>
 
-#include "card/CardHand.hpp"
+#include "common/card/CardHand.hpp"
 
 namespace card {
 	class Cropper {
