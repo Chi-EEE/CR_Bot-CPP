@@ -1,6 +1,6 @@
 add_rules("mode.debug", "mode.release")
 
-add_requires("opencv", "ffmpeg 7.0.2", {configs = {debug = false}})
+add_requires("opencv", "ffmpeg", {configs = {debug = false}})
 
 add_syslinks("kernel32", "shell32")
 
