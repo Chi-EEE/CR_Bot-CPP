@@ -10,7 +10,7 @@ package("platform-tools")
         add_urls("https://dl.google.com/android/repository/platform-tools_r$(version)-darwin.zip")
     end
 
-    on_install("@windows", "@macosx", "@linux", function (package)
+    on_install("windows", "macosx", "linux", function (package)
         os.cp("*", package:installdir("bin"))
         package:addenv("PATH", "bin")
     end)
